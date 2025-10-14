@@ -7,9 +7,7 @@ export default async function Home() {
   const data = await fetch('http://localhost:1337/api/homepage?populate=baner')
   const { data: homepage } = await data.json()
   const posts = await getPosts()
-
-  console.log(posts)
-
+  
   return (
     <div>
       <div className='relative w-full h-[350]'>
