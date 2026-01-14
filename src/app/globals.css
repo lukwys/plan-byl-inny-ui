@@ -2,10 +2,22 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
 @import "tailwindcss";
 
-@theme {
+@theme inline {
 	/* FONTS */
-	--font-dm-sans: "DM Sans", sans-serif;
-	--font-eb-garamond: "EB Garamond", serif;
+  --font-dm-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-eb-garamond: "EB Garamond", ui-serif, Georgia, serif;
 	/* COLORS */
-  --color-main-red: oklch(0.42 0.169 25.17)
+  --color-main-red: oklch(0.42 0.169 25.17);
+}
+
+@layer base {
+  .markdown h2 {
+    margin-block: --spacing(4);
+    font-family: var(--font-dm-sans);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--text-2xl);
+  }
+  .markdown p {
+    text-indent: 2rem;
+  }
 }

@@ -11,4 +11,5 @@ export type Post = {
   publishedAt: string
   cover_image: StrapiImage
   preview: string
+  slug: string
 }
