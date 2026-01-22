@@ -8,6 +8,7 @@
   --font-eb-garamond: "EB Garamond", ui-serif, Georgia, serif;
 	/* COLORS */
   --color-main-red: oklch(0.42 0.169 25.17);
+  --color-gray: oklch(0.83 0 0)
 }
 
 @layer base {

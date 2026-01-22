@@ -2,6 +2,7 @@ import { AboutMe } from "@/components/about-me"
 import ReactMarkdown from "react-markdown"
 import Image from 'next/image'
 import qs from "qs"
+import { Comments } from "@/components/comments/comments"
 
 type Params = { slug: string }
 
@@ -97,6 +98,7 @@ const res = await fetch(
             }
           })}
           </article>
+          <Comments />
         </div>
         <div className='col-start-10 col-span-3'>
           <AboutMe />
