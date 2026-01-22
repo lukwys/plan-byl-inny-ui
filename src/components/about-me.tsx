@@ -11,6 +11,9 @@ export const AboutMe = async () => {
         <Image
           src={`http://127.0.0.1:1337${aboutMe.avatar.url}`}
           alt="Zdjęcie o mnie"
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
           fill
         />
       </div>
