@@ -1,13 +1,26 @@
+import { CommentModel } from "@/types/comments";
 import { Comment } from "./comment";
 import { CommentsForm } from "./comments-form";
 
-export const Comments = () => {
+type CommentsProps = {
+  comments: CommentModel[];
+  postDocumentId: string;
+};
+
+export const Comments = ({ comments, postDocumentId }: CommentsProps) => {
   return (
     <div className="mt-6">
       <h3 className="font-dm-sans font-bold text-xl">Komentarze</h3>
-      <Comment />
-      <Comment />
-      <CommentsForm />
+      {comments && comments.length > 0 ? (
+        comments.map((comment) => (
+          <Comment key={comment.id} comment={comment} />
+        ))
+      ) : (
+        <p className="text-sm text-neutral-500 my-5">
+          Zapraszam do dyskusji 🙂
+        </p>
+      )}
+      <CommentsForm postDocumentId={postDocumentId} />
     </div>
   );
 };

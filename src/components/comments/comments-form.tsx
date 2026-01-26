@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-export const CommentsForm = () => {
+type CommentFormProps = {
+  postDocumentId: string;
+};
+
+export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
@@ -18,6 +22,7 @@ export const CommentsForm = () => {
     const formData = new FormData(form);
 
     const payload = {
+      postDocumentId,
       name: String(formData.get("name") ?? ""),
       email: String(formData.get("email") ?? ""),
       comment: String(formData.get("comment") ?? ""),
