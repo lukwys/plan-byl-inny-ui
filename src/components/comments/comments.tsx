@@ -1,9 +1,9 @@
-import { CommentModel } from "@/types/comments";
+import { PublicCommentModel } from "@/types/comments";
 import { Comment } from "./comment";
 import { CommentsForm } from "./comments-form";
 
 type CommentsProps = {
-  comments: CommentModel[];
+  comments: PublicCommentModel[];
   postDocumentId: string;
 };
 

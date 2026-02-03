@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type CommentFormProps = {
@@ -7,6 +8,7 @@ type CommentFormProps = {
 };
 
 export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
+  const router = useRouter();
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
@@ -45,6 +47,7 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
     setStatus("success");
     setMessage("Dzięki! Komentarz przyjęty (na razie testowo).");
     form.reset();
+    router.refresh();
   };
 
   return (

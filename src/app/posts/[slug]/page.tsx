@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import qs from "qs";
 import { Comments } from "@/components/comments/comments";
+import { getPublishedComments } from "@/lib/comments/get-published-comments";
 
 type Params = { slug: string };
 
@@ -26,7 +27,6 @@ export default async function PostPage({ params }: { params: Params }) {
             "content.paragraph-md": true,
           },
         },
-        comments: true,
       },
     },
     {
@@ -37,9 +37,7 @@ export default async function PostPage({ params }: { params: Params }) {
   const res = await fetch(`http://localhost:1337/api/posts?${query}`);
   const { data } = await res.json();
   const post = data[0];
-  const filteredComments = post.comments.filter(
-    (comment) => comment.commentStatus === "published",
-  );
+  const comments = await getPublishedComments(post.documentId);
 
   return (
     <div>
@@ -96,10 +94,7 @@ export default async function PostPage({ params }: { params: Params }) {
               }
             })}
           </article>
-          <Comments
-            comments={filteredComments}
-            postDocumentId={post.documentId}
-          />
+          <Comments postDocumentId={post.documentId} comments={comments} />
         </div>
         <div className="col-start-10 col-span-3">
           <AboutMe />
