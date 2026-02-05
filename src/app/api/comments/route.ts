@@ -1,4 +1,5 @@
 import { readStringParam } from "@/lib/http/read-string-param";
+import { createToken, sha256 } from "@/lib/security/tokens";
 import { NextResponse } from "next/server";
 
 function isValidEmail(email: string) {
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
       { status: 400 },
     );
 
-  const postDocumentId = String(body.postDocumentId);
+  const postDocumentId = String(body.postDocumentId ?? "").trim();
   const authorName = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();
   const commentBody = String(body.comment ?? "").trim();
@@ -29,39 +30,42 @@ export async function POST(req: Request) {
     );
   }
 
-  if (authorName.length < 2)
+  if (authorName.length < 2) {
     return NextResponse.json(
       { ok: false, error: "INVALID_NAME" },
       { status: 400 },
     );
+  }
 
-  if (!isValidEmail(email))
+  if (!isValidEmail(email)) {
     return NextResponse.json(
       { ok: false, error: "INVALID_EMAIL" },
       { status: 400 },
     );
+  }
 
-  if (commentBody.length < 5)
+  if (commentBody.length < 5) {
     return NextResponse.json(
       { ok: false, error: "INVALID_BODY" },
       { status: 400 },
     );
+  }
 
   const strapiUrl = process.env.STRAPI_URL;
-  const token = process.env.STRAPI_API_TOKEN;
+  const apiToken = process.env.STRAPI_API_TOKEN;
+  const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
-  if (!strapiUrl || !token) {
+  if (!strapiUrl || !apiToken) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
     );
   }
-
-  const res = await fetch(`${strapiUrl}/api/comments`, {
+  const createRes = await fetch(`${strapiUrl}/api/comments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${apiToken}`,
     },
     body: JSON.stringify({
       data: {
@@ -75,8 +79,8 @@ export async function POST(req: Request) {
     cache: "no-store",
   });
 
-  if (!res.ok) {
-    const errText = await res.text().catch(() => "");
+  if (!createRes.ok) {
+    const errText = await createRes.text().catch(() => "");
     return NextResponse.json(
       {
         ok: false,
@@ -87,11 +91,58 @@ export async function POST(req: Request) {
     );
   }
 
-  const created = await res.json();
+  const created = await createRes.json();
+  const commentDocumentId = created?.data?.documentId as string | undefined;
+
+  if (!commentDocumentId) {
+    return NextResponse.json(
+      { ok: false, error: "NO_COMMENT_DOCUMENT_ID" },
+      { status: 502 },
+    );
+  }
+
+  const token = createToken();
+  const tokenHash = sha256(token);
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+  const verificationRes = await fetch(
+    `${strapiUrl}/api/comments-verification`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiToken}`,
+      },
+      body: JSON.stringify({
+        data: {
+          tokenHash,
+          expiresAt,
+          usedAt: null,
+          comment: commentDocumentId,
+        },
+      }),
+      cache: "no-store",
+    },
+  );
+
+  if (!verificationRes.ok) {
+    const errText = await verificationRes.text().catch(() => "");
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "VERIFICATION_CREATE_FAILED",
+        details: errText.slice(0, 500),
+      },
+      { status: 502 },
+    );
+  }
+
+  const verifyUrl = `${siteUrl}/api/comments/verify?token=${token}`;
+  console.log("verifyUrl", verifyUrl);
 
   return NextResponse.json({
     ok: true,
-    commentId: created?.data?.id ?? null,
+    message: "Sprawdź skrzynkę e-mail i potwierdź komentarz.",
+    verifyUrl,
   });
 }
 
