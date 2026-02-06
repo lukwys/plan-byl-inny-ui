@@ -17,25 +17,24 @@ export default async function Home() {
 
   return (
     <div>
-      <div>
-        <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
-          <Image
-            src={`${STRAPI_URL}${homepage.baner.url}`}
-            alt="Baner"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="100vw"
-          />
-        </div>
+      <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
+        <Image
+          src={`${STRAPI_URL}${homepage.baner.url}`}
+          alt="Baner"
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
+        />
       </div>
-      <div className="container grid grid-cols-12 py-10 mx-auto">
-        <div className="col-start-2 col-span-6 flex flex-col gap-10">
+      <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12">
+        <div className="flex flex-col gap-10 lg:col-start-2 lg:col-span-6">
           {posts.map((post) => (
             <BlogPost key={post.id} post={post} />
           ))}
         </div>
-        <div className="col-start-9 col-span-3">
+        <div className="block lg:hidden h-px bg-neutral-200 my-4" />
+        <div className="lg:col-start-9 lg:col-span-3">
           <AboutMe />
         </div>
       </div>
