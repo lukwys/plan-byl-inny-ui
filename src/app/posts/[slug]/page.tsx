@@ -31,8 +31,8 @@ export default async function PostPage({ params }: { params: Params }) {
           <h1 className="text-white text-4xl font-bold">{post.title}</h1>
         </div>
       </div>
-      <div className="container grid grid-cols-12 py-10 mx-auto">
-        <div className="col-span-8">
+      <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12  px-4 lg:px-0">
+        <div className="lg:col-span-8">
           <article className="markdown">
             {post.content_blocks.map((block) => {
               switch (block.__component) {
@@ -73,7 +73,8 @@ export default async function PostPage({ params }: { params: Params }) {
           </article>
           <Comments postDocumentId={post.documentId} comments={comments} />
         </div>
-        <div className="col-start-10 col-span-3">
+        <div className="block lg:hidden h-px bg-neutral-200 my-4" />
+        <div className="lg:col-start-10 lg:col-span-3">
           <AboutMe />
         </div>
       </div>
