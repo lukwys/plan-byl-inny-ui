@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { HamburgerButton } from "./hamburger-button";
 
 const navLinks = [
   { href: "/", label: "Strona Główna" },
@@ -10,24 +12,52 @@ const navLinks = [
 ];
 
 export const Header = () => {
-  const pathName = usePathname();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="grid grid-cols-12 py-10">
-      <div className="col-start-2 col-span-2">tuBEDZIElogoKIEDYŚ.png</div>
-      <nav className="col-start-9 col-span-3 flex justify-between">
-        {navLinks.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`text-sm font-dm-sans ${
-              pathName === href ? "text-main-red" : "text-black"
-            }`}
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
+    <header className="relative z-50 bg-white">
+      <div className="flex items-center justify-between px-4 py-4 lg:grid lg:grid-cols-12 lg:px-0 lg:py-10">
+        <div className="lg:col-start-2 lg:col-span-2 font-bold">
+          tuBEDZIElogoKIEDYŚ.png
+        </div>
+        <nav className="hidden lg:flex lg:col-start-9 lg:col-span-3 justify-end gap-6">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`text-sm font-dm-sans transition-colors ${
+                pathname === href ? "text-main-red" : "text-black"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+        <HamburgerButton open={open} onClick={() => setOpen((v) => !v)} />
+      </div>
+      <div
+        className={`lg:hidden absolute top-full left-0 w-full bg-white border-t z-50 transition-all duration-300 ${
+          open
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-2 pointer-events-none"
+        }`}
+      >
+        <nav className="flex flex-col items-center gap-6 py-8">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setOpen(false)}
+              className={`text-sm font-dm-sans transition-colors ${
+                pathname === href ? "text-main-red" : "text-black"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 };
