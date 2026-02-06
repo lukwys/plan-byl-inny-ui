@@ -1,7 +1,5 @@
 import { StrapiImage } from "./strapi";
 
-type Params = { slug: string };
-
 type PostCoverImage = {
   url: string;
 };
@@ -35,6 +33,8 @@ export type PostPageModel = {
   cover_image: PostCoverImage;
   content_blocks: ContentBlock[];
 };
+
+export type Params = { slug: string };
 
 export type PostModel = {
   id: number;

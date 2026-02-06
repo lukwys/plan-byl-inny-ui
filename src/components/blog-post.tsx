@@ -8,7 +8,6 @@ type BlogPostProps = {
 };
 
 export const BlogPost = ({ post }: BlogPostProps) => {
-  console.log("post", post);
   return (
     <div>
       <div className="relative h-[350px] w-full">
