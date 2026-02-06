@@ -1,10 +1,8 @@
+import { STRAPI_API_TOKEN, STRAPI_URL } from "@/config/strapi";
 import { readStringParam } from "@/lib/http/read-string-param";
 import { createToken, sha256 } from "@/lib/security/tokens";
+import { isValidEmail } from "@/lib/validation/email";
 import { NextResponse } from "next/server";
-
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -51,21 +49,19 @@ export async function POST(req: Request) {
     );
   }
 
-  const strapiUrl = process.env.STRAPI_URL;
-  const apiToken = process.env.STRAPI_API_TOKEN;
   const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
-  if (!strapiUrl || !apiToken) {
+  if (!STRAPI_URL || !STRAPI_API_TOKEN) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
     );
   }
-  const createRes = await fetch(`${strapiUrl}/api/comments`, {
+  const createRes = await fetch(`${STRAPI_URL}/api/comments`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiToken}`,
+      Authorization: `Bearer ${STRAPI_API_TOKEN}`,
     },
     body: JSON.stringify({
       data: {
@@ -105,12 +101,12 @@ export async function POST(req: Request) {
   const tokenHash = sha256(token);
   const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
   const verificationRes = await fetch(
-    `${strapiUrl}/api/comments-verification`,
+    `${STRAPI_URL}/api/comments-verification`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiToken}`,
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
       },
       body: JSON.stringify({
         data: {
@@ -158,10 +154,9 @@ export async function GET(req: Request) {
     );
   }
 
-  const strapiUrl = process.env.STRAPI_URL;
   const token = process.env.STRAPI_API_TOKEN;
 
-  if (!strapiUrl || !token) {
+  if (!STRAPI_URL || !token) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
@@ -179,7 +174,7 @@ export async function GET(req: Request) {
   qs.set("fields[2]", "body");
   qs.set("fields[3]", "createdAt");
 
-  const res = await fetch(`${strapiUrl}/api/comments?${qs.toString()}`, {
+  const res = await fetch(`${STRAPI_URL}/api/comments?${qs.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
