@@ -1,7 +1,7 @@
-import { CommentModel } from "./comments";
+import { PublicCommentModel } from "@/types/comments";
 
 type CommentProps = {
-  comment: CommentModel;
+  comment: PublicCommentModel;
 };
 
 export const Comment = ({ comment }: CommentProps) => {

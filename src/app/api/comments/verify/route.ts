@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { readStringParam } from "@/lib/http/read-string-param";
 import { sha256 } from "@/lib/security/tokens";
+import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const token = readStringParam(searchParams.get("token"));
+  const tokenHash = sha256(token);
+  const qs = new URLSearchParams();
 
   if (!token) {
     return NextResponse.json(
@@ -13,26 +16,21 @@ export async function GET(req: Request) {
     );
   }
 
-  const strapiUrl = process.env.STRAPI_URL;
-  const apiToken = process.env.STRAPI_API_TOKEN;
-
-  if (!strapiUrl || !apiToken) {
+  if (!STRAPI_URL || !STRAPI_API_TOKEN) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
     );
   }
 
-  const tokenHash = sha256(token);
-  const qs = new URLSearchParams();
   qs.set("filters[tokenHash][$eq]", tokenHash);
   qs.set("pagination[pageSize]", "1");
   qs.set("populate[comment][populate][post]", "true");
 
   const findRes = await fetch(
-    `${strapiUrl}/api/comments-verification?${qs.toString()}`,
+    `${STRAPI_URL}/api/comments-verification?${qs.toString()}`,
     {
-      headers: { Authorization: `Bearer ${apiToken}` },
+      headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` },
       cache: "no-store",
     },
   );
@@ -78,12 +76,12 @@ export async function GET(req: Request) {
   }
 
   const updateCommentRes = await fetch(
-    `${strapiUrl}/api/comments/${commentDocumentId}`,
+    `${STRAPI_URL}/api/comments/${commentDocumentId}`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiToken}`,
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
       },
       body: JSON.stringify({
         data: {
@@ -109,12 +107,12 @@ export async function GET(req: Request) {
 
   const verificationDocumentId = verification?.documentId;
   await fetch(
-    `${strapiUrl}/api/comments-verificationś/${verificationDocumentId}`,
+    `${STRAPI_URL}/api/comments-verification/${verificationDocumentId}`,
     {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiToken}`,
+        Authorization: `Bearer ${STRAPI_API_TOKEN}`,
       },
       body: JSON.stringify({
         data: { usedAt: new Date().toISOString() },

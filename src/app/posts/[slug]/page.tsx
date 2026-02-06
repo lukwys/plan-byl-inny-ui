@@ -1,52 +1,31 @@
 import { AboutMe } from "@/components/about-me";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
-import qs from "qs";
 import { Comments } from "@/components/comments/comments";
 import { getPublishedComments } from "@/lib/comments/get-published-comments";
+import { STRAPI_URL } from "@/config/strapi";
+import { getPostBySlug } from "@/server/strapi/posts";
+import { notFound } from "next/navigation";
 
 type Params = { slug: string };
 
 export default async function PostPage({ params }: { params: Params }) {
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: params.slug,
-        },
-      },
-      populate: {
-        cover_image: true,
-        content_blocks: {
-          on: {
-            "content.gallery": {
-              populate: {
-                image_gallery: true,
-              },
-            },
-            "content.paragraph-md": true,
-          },
-        },
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  );
+  const post = await getPostBySlug(params.slug);
 
-  const res = await fetch(`http://localhost:1337/api/posts?${query}`);
-  const { data } = await res.json();
-  const post = data[0];
+  if (!post) notFound();
+
   const comments = await getPublishedComments(post.documentId);
 
   return (
     <div>
       <div className="relative w-full h-[600px]">
         <Image
-          src={`http://127.0.0.1:1337${post.cover_image.url}`}
+          src={`${STRAPI_URL}${post.cover_image.url}`}
           alt={post.title}
           fill
           className="object-cover"
+          priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-white text-4xl font-bold">{post.title}</h1>
@@ -63,7 +42,6 @@ export default async function PostPage({ params }: { params: Params }) {
                       <ReactMarkdown>{block.paragraph}</ReactMarkdown>
                     </div>
                   );
-
                 case "content.gallery":
                   return (
                     <div
@@ -76,10 +54,10 @@ export default async function PostPage({ params }: { params: Params }) {
                             : "grid-cols-1 sm:grid-cols-2"
                       }`}
                     >
-                      {block.image_gallery?.map((img: any) => (
+                      {block.image_gallery?.map((img) => (
                         <Image
                           key={img.id}
-                          src={`http://127.0.0.1:1337${img.url}`}
+                          src={`${STRAPI_URL}${img.url}`}
                           alt={img.alternativeText ?? ""}
                           width={img.width}
                           height={img.height}
@@ -88,7 +66,6 @@ export default async function PostPage({ params }: { params: Params }) {
                       ))}
                     </div>
                   );
-
                 default:
                   return null;
               }
