@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <div>
-      <div className="mt-6">
+      <div>
         <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
           <Image
             src={`${STRAPI_URL}${homepage.baner.url}`}
