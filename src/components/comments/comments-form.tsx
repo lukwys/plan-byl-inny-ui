@@ -93,7 +93,7 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
             className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900"
           />
         </label>
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-center sm:justify-end">
           <button
             type="submit"
             className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
