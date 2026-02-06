@@ -4,10 +4,10 @@ import { BlogPost } from "@/components/blog-post";
 import { STRAPI_URL } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
 import { PostModel } from "@/types/post";
-import { HomeModel } from "@/types/home";
+import { HomePageModel } from "@/types/home";
 
 export default async function Home() {
-  const homepage = await requestData<HomeModel>(
+  const homepage = await requestData<HomePageModel>(
     `${STRAPI_URL}/api/homepage?populate=baner`,
   );
 

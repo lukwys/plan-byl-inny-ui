@@ -1,4 +1,4 @@
-export type HomeModel = {
+export type HomePageModel = {
   baner: {
     url: string;
   };
