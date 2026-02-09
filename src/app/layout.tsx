@@ -2,6 +2,20 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { DM_Sans, EB_Garamond } from "next/font/google";
+
+export const dmSans = DM_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+export const ebGaramond = EB_Garamond({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-eb-garamond",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
+    <html lang="pl" className={`${dmSans.variable} ${ebGaramond.variable}`}>
       <body className="min-h-screen flex flex-col">
         <Header />
         <div className="flex-1">{children}</div>

@@ -1,3 +1,4 @@
+import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
 
 type PostCoverImage = {
@@ -48,4 +49,5 @@ export type PostModel = {
   cover_image: StrapiImage;
   preview: string;
   slug: string;
+  category?: CategoryModel;
 };

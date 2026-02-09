@@ -23,10 +23,15 @@ export const BlogPost = ({ post }: BlogPostProps) => {
       <div className="bg-gray-50">
         <div className="w-3/4 mx-auto py-10 flex flex-col gap-2.5 text-center">
           <h3 className="font-dm-sans text-2xl font-semibold">{post.title}</h3>
+          <div className="flex justify-center text-xs">
+            <p className="text-main-red">{post.category?.name.toUpperCase()}</p>
+            <p> • </p>
+            <p>{post.date}</p>
+          </div>
           <p className="font-eb-garamond text-lg">{post.preview}</p>
           <Link
             href={`/posts/${post.slug}`}
-            className="font-dm-sans font-medium underline underline-offset-4"
+            className="font-eb-garamond hover:text-main-red"
           >
             czytaj →
           </Link>

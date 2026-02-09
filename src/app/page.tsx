@@ -14,12 +14,10 @@ export default async function Home() {
   );
 
   const posts = await requestData<PostModel[]>(
-    `${STRAPI_URL}/api/posts?populate=cover_image`,
+    `${STRAPI_URL}/api/posts?populate=cover_image&populate=category`,
   );
 
   const categories = await getCategories();
-
-  console.log("categories", categories);
 
   return (
     <div>
