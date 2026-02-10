@@ -6,8 +6,7 @@ import { getPublishedComments } from "@/lib/comments/get-published-comments";
 import { STRAPI_URL } from "@/config/strapi";
 import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
-
-type Params = { slug: string };
+import { Params } from "@/types/post";
 
 export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(params.slug);

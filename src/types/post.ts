@@ -1,6 +1,5 @@
+import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
-
-type Params = { slug: string };
 
 type PostCoverImage = {
   url: string;
@@ -36,6 +35,8 @@ export type PostPageModel = {
   content_blocks: ContentBlock[];
 };
 
+export type Params = { slug: string };
+
 export type PostModel = {
   id: number;
   documentId: string;
@@ -48,4 +49,5 @@ export type PostModel = {
   cover_image: StrapiImage;
   preview: string;
   slug: string;
+  category?: CategoryModel;
 };
