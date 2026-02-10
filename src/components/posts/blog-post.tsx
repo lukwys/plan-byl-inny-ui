@@ -24,7 +24,14 @@ export const BlogPost = ({ post }: BlogPostProps) => {
         <div className="w-3/4 mx-auto py-10 flex flex-col gap-2.5 text-center">
           <h3 className="font-dm-sans text-2xl font-semibold">{post.title}</h3>
           <div className="flex justify-center text-xs">
-            <p className="text-main-red">{post.category?.name.toUpperCase()}</p>
+            <Link
+              href={`/category/${post.category?.slug}`}
+              className="hover:text-main-red"
+            >
+              <p className="text-main-red">
+                {post.category?.name.toUpperCase()}
+              </p>
+            </Link>
             <p> • </p>
             <p>{post.date}</p>
           </div>
