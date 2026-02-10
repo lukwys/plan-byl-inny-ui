@@ -4,6 +4,7 @@ import { PostModel } from "@/types/post";
 import { HomePageModel } from "@/types/home";
 import { getCategories } from "@/server/strapi/categories";
 import { PostsListing } from "@/components/posts/posts-listing";
+import { SocialLinkModel } from "@/types/social-link";
 
 export default async function Home() {
   const homepage = await requestData<HomePageModel>(
@@ -14,9 +15,18 @@ export default async function Home() {
     `${STRAPI_URL}/api/posts?populate=cover_image&populate=category`,
   );
 
+  const socialLinks = await requestData<SocialLinkModel[]>(
+    `${STRAPI_URL}/api/links?populate=icon`,
+  );
+
   const categories = await getCategories();
 
   return (
-    <PostsListing homepage={homepage} posts={posts} categories={categories} />
+    <PostsListing
+      homepage={homepage}
+      posts={posts}
+      categories={categories}
+      socialLinks={socialLinks}
+    />
   );
 }
