@@ -25,7 +25,7 @@ export const AboutMe = async () => {
       <p className="font-eb-garamond mb-2.5">{bio}</p>
       <Link
         href="/about"
-        className="font-eb-garamond text-main-red font-medium"
+        className="font-eb-garamond text-main-red font-medium hover:text-main-red-hover"
       >
         dowiedz się więcej →
       </Link>

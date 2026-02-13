@@ -13,7 +13,7 @@ export const Category = ({ category }: CategoryProps) => {
   return (
     <Link
       href={`/category/${slug}`}
-      className="relative block w-full overflow-hidden py-10"
+      className="group relative block w-full overflow-hidden py-10"
       aria-label={`Kategoria: ${name}`}
     >
       <div className="absolute inset-0">
@@ -22,7 +22,7 @@ export const Category = ({ category }: CategoryProps) => {
             src={`${STRAPI_URL}${image.url}`}
             alt=""
             fill
-            className="object-cover opacity-70"
+            className="object-cover opacity-70 transition-opacity duration-300 group-hover:opacity-90"
             sizes="100vw"
             priority
           />
@@ -31,8 +31,10 @@ export const Category = ({ category }: CategoryProps) => {
         )}
       </div>
       <div className="relative z-10 flex justify-center">
-        <div className="w-1/2 flex justify-center py-3 bg-white/80">
-          <p className="text-main-red">{name.toUpperCase()}</p>
+        <div className="flex w-1/2 justify-center bg-white/80 py-3">
+          <p className="text-main-red transition-colors group-hover:text-main-red-hover">
+            {name.toUpperCase()}
+          </p>
         </div>
       </div>
     </Link>

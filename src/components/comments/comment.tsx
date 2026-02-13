@@ -13,7 +13,9 @@ export const Comment = ({ comment }: CommentProps) => {
       <div className="w-20 h-20 bg-amber-700 rounded-full shrink-0" />
       <div className="flex flex-1 justify-between">
         <div>
-          <div className="text-main-red ">{authorName}</div>
+          <div className="text-main-red  hover:text-main-red-hover">
+            {authorName}
+          </div>
           <div>{body}</div>
         </div>
         <div className="text-gray text-[10px]">
