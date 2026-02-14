@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/dates/format-date";
 import { PublicCommentModel } from "@/types/comments";
 
 type CommentProps = {
@@ -15,7 +16,9 @@ export const Comment = ({ comment }: CommentProps) => {
           <div className="text-main-red ">{authorName}</div>
           <div>{body}</div>
         </div>
-        <div className="text-gray text-[10px]">{createdAt}</div>
+        <div className="text-gray text-[10px]">
+          {formatDate(createdAt, "HH:mm, d MMMM yyyy")}
+        </div>
       </div>
     </div>
   );
