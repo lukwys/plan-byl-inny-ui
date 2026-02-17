@@ -19,10 +19,9 @@ type GalleryImage = {
   height: number;
 };
 
-type GalleryBlock = {
+export type GalleryBlock = {
   id: number;
   __component: "content.gallery";
-  cols: "one" | "two" | "three";
   image_gallery?: GalleryImage[];
 };
 
