@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { HamburgerButton } from "./hamburger-button";
@@ -17,24 +18,37 @@ export const Header = () => {
 
   return (
     <header className="relative z-50 bg-white">
-      <div className="flex items-center justify-between px-4 py-4 lg:grid lg:grid-cols-12 lg:px-0 lg:py-10">
-        <div className="lg:col-start-2 lg:col-span-2 font-bold">
-          tuBEDZIElogoKIEDYŚ.png
+      <div className="flex items-center justify-between px-4 py-2 lg:grid lg:grid-cols-12 lg:px-0 lg:py-5">
+        <div className="lg:col-start-2 lg:col-span-2">
+          <Link
+            href="/"
+            className="relative block h-10 w-32 lg:h-14 lg:w-44"
+            aria-label="Go to homepage"
+          >
+            <Image
+              src="/logo.png"
+              alt="Site logo"
+              className="object-contain"
+              fill
+              priority
+            />
+          </Link>
         </div>
         <nav className="hidden lg:flex lg:col-start-9 lg:col-span-3 justify-end gap-6">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className={`text-sm font-dm-sans transition-colors ${
-                pathname === href ? "text-main-red" : "text-black"
-              }`}
+              className="text-sm font-dm-sans transition-colors hover:text-main-red-hover"
             >
               {label}
             </Link>
           ))}
         </nav>
-        <HamburgerButton open={open} onClick={() => setOpen((v) => !v)} />
+        <HamburgerButton
+          open={open}
+          onClick={() => setOpen((isOpen) => !isOpen)}
+        />
       </div>
       <div
         className={`lg:hidden absolute top-full left-0 w-full bg-white border-t z-50 transition-all duration-300 ${

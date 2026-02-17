@@ -28,10 +28,10 @@ export const BlogPost = ({ post }: BlogPostProps) => {
           <h3 className="font-dm-sans text-2xl font-semibold">{title}</h3>
           <div className="flex justify-center text-xs">
             <Link
-              href={`/category/${category?.slug}`}
-              className="hover:text-main-red"
+              href={`/category/${post.category?.slug}`}
+              className="text-main-red hover:text-main-red-hover"
             >
-              <p className="text-main-red">{category?.name.toUpperCase()}</p>
+              <p>{category?.name.toUpperCase()}</p>
             </Link>
             <p> • </p>
             <p>{formatDate(date)}</p>
@@ -39,7 +39,7 @@ export const BlogPost = ({ post }: BlogPostProps) => {
           <p className="font-eb-garamond text-lg">{preview}</p>
           <Link
             href={`/posts/${slug}`}
-            className="font-eb-garamond hover:text-main-red"
+            className="font-eb-garamond text-main-red hover:text-main-red-hover"
           >
             czytaj →
           </Link>
