@@ -7,6 +7,7 @@ import { STRAPI_URL } from "@/config/strapi";
 import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
+import { Gallery } from "@/components/gallery";
 
 export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(params.slug);
@@ -41,30 +42,9 @@ export default async function PostPage({ params }: { params: Params }) {
                       <ReactMarkdown>{block.paragraph}</ReactMarkdown>
                     </div>
                   );
-                case "content.gallery":
-                  return (
-                    <div
-                      key={block.id}
-                      className={`my-6 grid gap-4 ${
-                        block.cols === "three"
-                          ? "grid-cols-1 sm:grid-cols-3"
-                          : block.cols === "one"
-                            ? "grid-cols-1"
-                            : "grid-cols-1 sm:grid-cols-2"
-                      }`}
-                    >
-                      {block.image_gallery?.map((img) => (
-                        <Image
-                          key={img.id}
-                          src={`${STRAPI_URL}${img.url}`}
-                          alt={img.alternativeText ?? ""}
-                          width={img.width}
-                          height={img.height}
-                          className="w-full h-auto rounded-xl"
-                        />
-                      ))}
-                    </div>
-                  );
+                case "content.gallery": {
+                  return <Gallery key={block.id} block={block} />;
+                }
                 default:
                   return null;
               }
