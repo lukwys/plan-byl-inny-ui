@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { data, error } = await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: `Plan był inny <${from}>`,
     to,
     subject: `Kontakt: ${name}`,
@@ -67,6 +67,5 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     message: "Dzięki! Wiadomość wysłana.",
-    id: data?.id,
   });
 }

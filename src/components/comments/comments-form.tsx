@@ -1,8 +1,8 @@
 "use client";
 
+import { commentFormSchema } from "@/lib/validation/schemas";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 type CommentFormProps = {
   postDocumentId: string;
 };
@@ -12,48 +12,81 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState("");
+  const [isFormValid, setIsFormValid] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus("sending");
-    setMessage("");
+  const isSubmitting = status === "sending";
+  const isButtonDisabled = isSubmitting || !isFormValid;
 
-    const form = event.currentTarget;
-
+  const buildPayloadFromForm = (form: HTMLFormElement) => {
     const formData = new FormData(form);
-
-    const payload = {
+    return {
       postDocumentId,
       name: String(formData.get("name") ?? ""),
       email: String(formData.get("email") ?? ""),
       comment: String(formData.get("comment") ?? ""),
-      website: String(formData.get("website") ?? ""), // honeypot
+      hp: String(formData.get("hp") ?? ""),
     };
+  };
 
-    const res = await fetch("/api/comments", {
+  const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
+    const form = event.currentTarget;
+    const payload = buildPayloadFromForm(form);
+    setIsFormValid(commentFormSchema.safeParse(payload).success);
+    if (status !== "idle") {
+      setStatus("idle");
+      setMessage("");
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const payload = buildPayloadFromForm(form);
+
+    const parsed = commentFormSchema.safeParse(payload);
+    if (!parsed.success) {
+      setStatus("error");
+      setMessage("Uzupełnij poprawnie formularz.");
+      setIsFormValid(false);
+      return;
+    }
+
+    setStatus("sending");
+    setMessage("");
+
+    const response = await fetch("/api/comments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(parsed.data),
     });
 
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
+    const data = await response.json();
+
+    if (!response.ok || data?.ok === false) {
       setStatus("error");
-      setMessage(data?.error ?? "Coś poszło nie tak.");
+      setMessage(String(data?.error ?? "Coś poszło nie tak."));
       return;
     }
 
     setStatus("success");
-    setMessage("Dzięki! Komentarz przyjęty (na razie testowo).");
+    setMessage(
+      String(data?.message ?? "Sprawdź skrzynkę e-mail i potwierdź komentarz."),
+    );
     form.reset();
+    setIsFormValid(false);
     router.refresh();
   };
 
   return (
     <div>
       <h3 className="font-dm-sans font-bold text-xl">Zostaw swój komentarz</h3>
-      <form className="mt-10 w-full" onSubmit={handleSubmit}>
+      <form
+        className="mt-10 w-full"
+        onSubmit={handleSubmit}
+        onInput={handleFormInput}
+      >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <label className="block">
             <span className="sr-only">Imię</span>
@@ -62,7 +95,8 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
               name="name"
               required
               placeholder="Imię*"
-              className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              disabled={isSubmitting}
+              className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
             />
           </label>
           <label className="block">
@@ -72,14 +106,14 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
               name="email"
               required
               placeholder="E-mail*"
-              className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+              disabled={isSubmitting}
+              className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
             />
           </label>
         </div>
-        {/* honeypot */}
         <input
           type="text"
-          name="website"
+          name="hp"
           tabIndex={-1}
           autoComplete="off"
           className="hidden"
@@ -90,15 +124,34 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
             name="comment"
             required
             placeholder="Napisz swój komentarz..."
-            className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900"
+            disabled={isSubmitting}
+            className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
         </label>
-        <div className="mt-8 flex justify-center sm:justify-end">
+        <div className="mt-4 min-h-[20px]">
+          {status !== "idle" ? (
+            <p
+              className={`text-sm ${
+                status === "success"
+                  ? "text-green-700"
+                  : status === "error"
+                    ? "text-red-700"
+                    : "text-neutral-600"
+              }`}
+              role="status"
+              aria-live="polite"
+            >
+              {isSubmitting ? "Wysyłanie..." : message}
+            </p>
+          ) : null}
+        </div>
+        <div className="mt-6 flex justify-center sm:justify-end">
           <button
             type="submit"
-            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+            disabled={isButtonDisabled}
+            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
           >
-            Wyślij
+            {isSubmitting ? "Wysyłanie..." : "Wyślij"}
           </button>
         </div>
       </form>

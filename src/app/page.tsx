@@ -13,6 +13,8 @@ export default async function Home() {
 
   const posts = await requestData<PostModel[]>(
     `${STRAPI_URL}/api/posts?populate=cover_image&populate=category`,
+    undefined,
+    { revalidate: 60 },
   );
 
   const socialLinks = await requestData<SocialLinkModel[]>(
