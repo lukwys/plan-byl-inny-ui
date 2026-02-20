@@ -8,9 +8,15 @@ import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
+import { requestData } from "@/lib/http/requestData";
+import { SocialLinkModel } from "@/types/social-link";
+import { SocialLink } from "@/components/social-link";
 
 export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(params.slug);
+  const socialLinks = await requestData<SocialLinkModel[]>(
+    `${STRAPI_URL}/api/links?populate=icon`,
+  );
 
   if (!post) notFound();
 
@@ -55,6 +61,11 @@ export default async function PostPage({ params }: { params: Params }) {
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
         <div className="lg:col-start-10 lg:col-span-3">
           <AboutMe />
+          <div className="flex gap-3 justify-center mt-3">
+            {socialLinks.map((link) => (
+              <SocialLink key={link.documentId} socialLink={link} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
