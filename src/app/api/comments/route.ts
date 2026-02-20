@@ -3,8 +3,12 @@ import { readStringParam } from "@/lib/http/read-string-param";
 import { createToken, sha256 } from "@/lib/security/tokens";
 import { isValidEmail } from "@/lib/validation/email";
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
+  const siteUrl = process.env.SITE_URL;
   const body = await req.json().catch(() => null);
   if (!body)
     return NextResponse.json(
@@ -48,8 +52,6 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
-
-  const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
   if (!STRAPI_URL || !STRAPI_API_TOKEN) {
     return NextResponse.json(
@@ -133,12 +135,45 @@ export async function POST(req: Request) {
   }
 
   const verifyUrl = `${siteUrl}/api/comments/verify?token=${token}`;
-  console.log("verifyUrl", verifyUrl);
+  const from = process.env.COMMENTS_FROM_EMAIL;
+
+  if (!process.env.RESEND_API_KEY || !from) {
+    return NextResponse.json(
+      { ok: false, error: "SERVER_MISCONFIG" },
+      { status: 500 },
+    );
+  }
+
+  const subject = "Potwierdź swój komentarz";
+
+  const text =
+    `Cześć ${authorName},\n\n` +
+    `Dziękuję za komentarz! Kliknij link, aby go potwierdzić:\n` +
+    `${verifyUrl}\n\n` +
+    `Link jest ważny przez 30 minut.\n` +
+    `Jeśli to nie Ty, zignoruj tę wiadomość.\n`;
+
+  const { error } = await resend.emails.send({
+    from: `Plan był inny <${from}>`,
+    to: email,
+    subject,
+    text,
+  });
+
+  if (error) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "EMAIL_SEND_FAILED",
+        details: error.message?.slice(0, 500),
+      },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({
     ok: true,
     message: "Sprawdź skrzynkę e-mail i potwierdź komentarz.",
-    verifyUrl,
   });
 }
 
