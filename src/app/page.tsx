@@ -5,6 +5,7 @@ import { HomePageModel } from "@/types/home";
 import { getCategories } from "@/server/strapi/categories";
 import { PostsListing } from "@/components/posts/posts-listing";
 import { SocialLinkModel } from "@/types/social-link";
+import Image from "next/image";
 
 export default async function Home() {
   const homepage = await requestData<HomePageModel>(
@@ -24,11 +25,23 @@ export default async function Home() {
   const categories = await getCategories();
 
   return (
-    <PostsListing
-      homepage={homepage}
-      posts={posts}
-      categories={categories}
-      socialLinks={socialLinks}
-    />
+    <div>
+      <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
+        <Image
+          src={`${STRAPI_URL}${homepage.baner.url}`}
+          alt="Baner"
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
+        />
+      </div>
+
+      <PostsListing
+        posts={posts}
+        categories={categories}
+        socialLinks={socialLinks}
+      />
+    </div>
   );
 }
