@@ -7,7 +7,7 @@ export async function getCategories(): Promise<CategoryModel[]> {
 
   qs.set("sort", "name:asc");
   qs.set("pagination[pageSize]", "100");
-
+  qs.set("filters[posts][id][$notNull]", "true");
   qs.set("fields[0]", "documentId");
   qs.set("fields[1]", "name");
   qs.set("fields[2]", "slug");
