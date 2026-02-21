@@ -44,8 +44,21 @@ export default async function PostPage({ params }: { params: Params }) {
               switch (block.__component) {
                 case "content.paragraph-md":
                   return (
-                    <div key={block.id} className="prose max-w-none">
-                      <ReactMarkdown>{block.paragraph}</ReactMarkdown>
+                    <div key={block.id}>
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children, ...props }) => (
+                            <p
+                              className="font-eb-garamond text-lg text-justify"
+                              {...props}
+                            >
+                              {children}
+                            </p>
+                          ),
+                        }}
+                      >
+                        {block.paragraph}
+                      </ReactMarkdown>
                     </div>
                   );
                 case "content.gallery": {

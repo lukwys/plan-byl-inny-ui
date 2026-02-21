@@ -20,7 +20,7 @@ export const PostsListing = ({
   return (
     <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12">
       <div className="lg:col-start-2 lg:col-span-6">
-        <h1 className="font-dm-sans text-center lg:text-left text-3xl mb-10">
+        <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">
           Odkryj najnowsze wpisy
         </h1>
         <div className="flex flex-col gap-10">
