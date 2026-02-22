@@ -5,10 +5,8 @@ export const commentFormSchema = z.object({
   name: z.string().trim().min(2, "INVALID_NAME").max(80, "INVALID_NAME"),
   email: z.string().trim().email("INVALID_EMAIL").max(150, "INVALID_EMAIL"),
   comment: z.string().trim().min(5, "INVALID_BODY").max(5000, "INVALID_BODY"),
-  hp: z.string().optional().default(""), // honeypot
+  hp: z.string().optional().default(""),
 });
-
-export type CommentFormInput = z.infer<typeof commentFormSchema>;
 
 export const contactFormSchema = z.object({
   name: z.string().trim().min(2, "INVALID_NAME").max(80, "INVALID_NAME"),
@@ -17,4 +15,7 @@ export const contactFormSchema = z.object({
   hp: z.string().optional().default(""),
 });
 
-export type ContactFormInput = z.infer<typeof contactFormSchema>;
+export const newsletterSchema = z.object({
+  email: z.string().trim().email("INVALID_EMAIL").max(150, "INVALID_EMAIL"),
+  hp: z.string().optional().default(""),
+});
