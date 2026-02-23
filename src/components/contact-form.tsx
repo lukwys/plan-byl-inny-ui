@@ -74,11 +74,7 @@ export const ContactForm = () => {
   };
 
   return (
-    <form
-      className="mt-10 w-full"
-      onSubmit={handleSubmit}
-      onInput={handleFormInput}
-    >
+    <form onSubmit={handleSubmit} onInput={handleFormInput}>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <label className="block">
           <span className="sr-only">Imię</span>
