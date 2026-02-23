@@ -27,7 +27,7 @@ export default async function PostPage({ params }: { params: Params }) {
       <div className="relative w-full h-[600px]">
         <Image
           src={`${STRAPI_URL}${post.cover_image.url}`}
-          alt={post.title}
+          alt={post.cover_image.alternativeText ?? ""}
           fill
           className="object-cover"
           priority

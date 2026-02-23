@@ -1,10 +1,8 @@
+import { StrapiImage } from "./strapi";
+
 export type AboutMeModel = {
-  header_image: {
-    url: string;
-  };
+  header_image: StrapiImage;
   title: string;
   bio: string;
-  avatar: {
-    url: string;
-  };
+  avatar: StrapiImage;
 };
