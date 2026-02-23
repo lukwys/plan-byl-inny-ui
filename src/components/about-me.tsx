@@ -21,7 +21,7 @@ export const AboutMe = async () => {
           priority
         />
       </div>
-      <p className="font-dm-sans font-semibold mb-2.5">{title}</p>
+      <h3 className="font-dm-sans text-xl font-semibold mb-2.5">{title}</h3>
       <p className="font-eb-garamond mb-2.5">{bio}</p>
       <Link
         href="/about"
