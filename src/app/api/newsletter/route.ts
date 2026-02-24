@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { newsletterSchema } from "@/lib/validation/schemas";
+import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => null);
+  const body = await request.json();
 
   if (!body) {
     return NextResponse.json(
@@ -29,6 +30,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, message: "OK" });
   }
 
+  const token =
+    typeof body.turnstileToken === "string" ? body.turnstileToken : "";
+
+  if (!token) {
+    return NextResponse.json(
+      { ok: false, error: "TURNSTILE_REQUIRED" },
+      { status: 400 },
+    );
+  }
+
+  const validation = await validateTurnstile(token);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "TURNSTILE_INVALID",
+        codes: validation["error-codes"] ?? [],
+      },
+      { status: 403 },
+    );
+  }
+
   const apiKey = process.env.RESEND_CONTACTS_API_KEY;
   const audienceId = process.env.RESEND_AUDIENCE_ID;
 
@@ -51,10 +75,7 @@ export async function POST(request: Request) {
 
     if (error) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: "RESEND_SUBSCRIBE_FAILED",
-        },
+        { ok: false, error: "RESEND_SUBSCRIBE_FAILED" },
         { status: 502 },
       );
     }
@@ -63,10 +84,10 @@ export async function POST(request: Request) {
       ok: true,
       message: "Super! Dopisałem Cię do listy.",
     });
-  } else {
-    return NextResponse.json({
-      ok: true,
-      message: "Plan był inny, ale Ty już z nami jesteś!",
-    });
   }
+
+  return NextResponse.json({
+    ok: true,
+    message: "Plan był inny, ale Ty już z nami jesteś!",
+  });
 }
