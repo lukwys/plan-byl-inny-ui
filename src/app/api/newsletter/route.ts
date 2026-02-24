@@ -30,8 +30,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, message: "OK" });
   }
 
-  const token =
-    typeof body.turnstileToken === "string" ? body.turnstileToken : "";
+  const token = typeof body.token === "string" ? body.token : "";
 
   if (!token) {
     return NextResponse.json(

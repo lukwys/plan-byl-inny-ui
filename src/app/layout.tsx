@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -40,10 +39,6 @@ export default function RootLayout({
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
-        <Script
-          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

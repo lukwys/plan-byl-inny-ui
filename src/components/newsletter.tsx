@@ -2,13 +2,13 @@
 
 import { newsletterSchema } from "@/lib/validation/schemas";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 const buildPayloadFromForm = (form: HTMLFormElement) => {
   const formData = new FormData(form);
   return {
     email: String(formData.get("email") ?? ""),
     hp: String(formData.get("hp") ?? ""),
-    token: String(formData.get("cf-turnstile-response") ?? ""),
   };
 };
 
@@ -17,6 +17,7 @@ export const Newsletter = () => {
     "idle" | "sending" | "success" | "error"
   >("idle");
   const [message, setMessage] = useState("");
+  const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
 
   const isSubmitting = status === "sending";
@@ -40,7 +41,7 @@ export const Newsletter = () => {
     const form = event.currentTarget;
     const payload = buildPayloadFromForm(form);
 
-    if (payload.token === "") {
+    if (token === "") {
       setStatus("error");
       setMessage("Trwa weryfikacja antyspamowa. Spróbuj ponownie za chwilę.");
       return;
@@ -52,7 +53,7 @@ export const Newsletter = () => {
     const response = await fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, token }),
     });
 
     const data = await response.json();
@@ -99,13 +100,11 @@ export const Newsletter = () => {
           className="hidden"
           aria-hidden="true"
         />
-        <div
-          className="cf-turnstile"
-          data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
-          data-theme="light"
-          data-size="normal"
-          data-callback="onSuccess"
-        ></div>
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          onSuccess={setToken}
+          options={{ theme: "light" }}
+        />
         <div className="mt-6 flex justify-center">
           <button
             type="submit"
