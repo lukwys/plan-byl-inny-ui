@@ -1,5 +1,5 @@
+import { StrapiImage } from "./strapi";
+
 export type HomePageModel = {
-  baner: {
-    url: string;
-  };
+  baner: StrapiImage;
 };

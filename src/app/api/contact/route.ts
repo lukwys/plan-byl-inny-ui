@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { isValidEmail } from "@/lib/validation/email";
+import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -36,6 +37,28 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { ok: false, error: "INVALID_BODY" },
       { status: 400 },
+    );
+  }
+
+  const token = typeof body.token === "string" ? body.token : "";
+
+  if (!token) {
+    return NextResponse.json(
+      { ok: false, error: "TURNSTILE_REQUIRED" },
+      { status: 400 },
+    );
+  }
+
+  const validation = await validateTurnstile(token);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "TURNSTILE_INVALID",
+        codes: validation["error-codes"] ?? [],
+      },
+      { status: 403 },
     );
   }
 

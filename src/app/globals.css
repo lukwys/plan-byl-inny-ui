@@ -17,7 +17,4 @@
     font-weight: var(--font-weight-semibold);
     font-size: var(--text-2xl);
   }
-  .markdown p {
-    text-indent: 2rem;
-  }
 }

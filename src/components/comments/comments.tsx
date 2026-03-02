@@ -13,7 +13,7 @@ export const Comments = ({ comments, postDocumentId }: CommentsProps) => {
       <h3 className="font-dm-sans font-bold text-xl">Komentarze</h3>
       {comments && comments.length > 0 ? (
         comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
+          <Comment key={comment.documentId} comment={comment} />
         ))
       ) : (
         <p className="text-sm text-neutral-500 my-5">

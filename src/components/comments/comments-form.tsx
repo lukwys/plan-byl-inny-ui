@@ -1,5 +1,6 @@
 "use client";
 
+import { Turnstile } from "@marsidev/react-turnstile";
 import { commentFormSchema } from "@/lib/validation/schemas";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +15,7 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
   >("idle");
   const [message, setMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [token, setToken] = useState("");
 
   const isSubmitting = status === "sending";
   const isButtonDisabled = isSubmitting || !isFormValid;
@@ -45,21 +47,13 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
     const form = event.currentTarget;
     const payload = buildPayloadFromForm(form);
 
-    const parsed = commentFormSchema.safeParse(payload);
-    if (!parsed.success) {
-      setStatus("error");
-      setMessage("Uzupełnij poprawnie formularz.");
-      setIsFormValid(false);
-      return;
-    }
-
     setStatus("sending");
     setMessage("");
 
     const response = await fetch("/api/comments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data),
+      body: JSON.stringify({ ...payload, token }),
     });
 
     const data = await response.json();
@@ -128,24 +122,13 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
             className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
         </label>
-        <div className="mt-4 min-h-[20px]">
-          {status !== "idle" ? (
-            <p
-              className={`text-sm ${
-                status === "success"
-                  ? "text-green-700"
-                  : status === "error"
-                    ? "text-red-700"
-                    : "text-neutral-600"
-              }`}
-              role="status"
-              aria-live="polite"
-            >
-              {isSubmitting ? "Wysyłanie..." : message}
-            </p>
-          ) : null}
-        </div>
-        <div className="mt-6 flex justify-center sm:justify-end">
+
+        <div className="flex flex-col gap-4 mt-4 items-end">
+          <Turnstile
+            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+            onSuccess={setToken}
+            options={{ theme: "light" }}
+          />
           <button
             type="submit"
             disabled={isButtonDisabled}
@@ -153,6 +136,23 @@ export const CommentsForm = ({ postDocumentId }: CommentFormProps) => {
           >
             {isSubmitting ? "Wysyłanie..." : "Wyślij"}
           </button>
+          <div className="mt-4 min-h-[20px]">
+            {status !== "idle" ? (
+              <p
+                className={`text-sm ${
+                  status === "success"
+                    ? "text-green-700"
+                    : status === "error"
+                      ? "text-red-700"
+                      : "text-neutral-600"
+                }`}
+                role="status"
+                aria-live="polite"
+              >
+                {isSubmitting ? "Wysyłanie..." : message}
+              </p>
+            ) : null}
+          </div>
         </div>
       </form>
     </div>

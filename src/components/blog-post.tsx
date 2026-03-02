@@ -16,7 +16,7 @@ export const BlogPost = ({ post }: BlogPostProps) => {
       <div className="relative h-[350px] w-full">
         <Image
           src={`${STRAPI_URL}${cover_image.url}`}
-          alt={title}
+          alt={cover_image.alternativeText ?? ""}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 950px"

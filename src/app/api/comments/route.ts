@@ -2,6 +2,7 @@ import { STRAPI_API_TOKEN, STRAPI_URL } from "@/config/strapi";
 import { readStringParam } from "@/lib/http/read-string-param";
 import { createToken, sha256 } from "@/lib/security/tokens";
 import { isValidEmail } from "@/lib/validation/email";
+import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -86,6 +87,28 @@ export async function POST(req: Request) {
         details: errText.slice(0, 500),
       },
       { status: 502 },
+    );
+  }
+
+  const turnstileToken = typeof body.token === "string" ? body.token : "";
+
+  if (!turnstileToken) {
+    return NextResponse.json(
+      { ok: false, error: "TURNSTILE_REQUIRED" },
+      { status: 400 },
+    );
+  }
+
+  const validation = await validateTurnstile(turnstileToken);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "TURNSTILE_INVALID",
+        codes: validation["error-codes"] ?? [],
+      },
+      { status: 403 },
     );
   }
 

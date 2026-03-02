@@ -1,22 +1,19 @@
 import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
 
-type PostCoverImage = {
-  url: string;
-};
-
 type ParagraphBlock = {
-  id: number;
+  documentId: string;
   __component: "content.paragraph-md";
   paragraph: string;
 };
 
 type GalleryImage = {
-  id: number;
+  documentId: string;
   url: string;
   alternativeText?: string | null;
   width: number;
   height: number;
+  caption?: string;
 };
 
 export type GalleryBlock = {
@@ -30,7 +27,7 @@ type ContentBlock = ParagraphBlock | GalleryBlock;
 export type PostPageModel = {
   documentId: string;
   title: string;
-  cover_image: PostCoverImage;
+  cover_image: StrapiImage;
   content_blocks: ContentBlock[];
 };
 

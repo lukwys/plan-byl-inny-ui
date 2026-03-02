@@ -33,7 +33,7 @@ export default async function Home() {
       <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
         <Image
           src={`${STRAPI_URL}${homepage.baner.url}`}
-          alt="Baner"
+          alt={homepage.baner.alternativeText ?? ""}
           fill
           className="object-cover object-center"
           priority

@@ -22,7 +22,7 @@ const AboutMe = async () => {
         </h1>
         <Image
           src={`${STRAPI_URL}${header_image.url}`}
-          alt="Zdjęcie o mnie"
+          alt={header_image.alternativeText ?? ""}
           className="object-cover"
           priority
           sizes="100vw"
@@ -42,7 +42,7 @@ const AboutMe = async () => {
         <div className="order-1 relative mx-auto mb-12 aspect-square w-[300px] lg:order-none lg:col-start-8 lg:col-span-3 lg:w-[500px]">
           <Image
             src={`${STRAPI_URL}${avatar.url}`}
-            alt="Zdjęcie o mnie"
+            alt={avatar.alternativeText ?? ""}
             fill
             priority
             className="object-cover object-center"

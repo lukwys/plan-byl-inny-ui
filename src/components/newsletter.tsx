@@ -2,24 +2,26 @@
 
 import { newsletterSchema } from "@/lib/validation/schemas";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+
+const buildPayloadFromForm = (form: HTMLFormElement) => {
+  const formData = new FormData(form);
+  return {
+    email: String(formData.get("email") ?? ""),
+    hp: String(formData.get("hp") ?? ""),
+  };
+};
 
 export const Newsletter = () => {
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
   const [message, setMessage] = useState("");
+  const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
 
   const isSubmitting = status === "sending";
   const isButtonDisabled = isSubmitting || !isFormValid;
-
-  const buildPayloadFromForm = (form: HTMLFormElement) => {
-    const formData = new FormData(form);
-    return {
-      email: String(formData.get("email") ?? ""),
-      hp: String(formData.get("hp") ?? ""),
-    };
-  };
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -39,11 +41,9 @@ export const Newsletter = () => {
     const form = event.currentTarget;
     const payload = buildPayloadFromForm(form);
 
-    const parsed = newsletterSchema.safeParse(payload);
-    if (!parsed.success) {
+    if (token === "") {
       setStatus("error");
-      setMessage(parsed.error.issues?.[0]?.message ?? "Uzupełnij formularz.");
-      setIsFormValid(false);
+      setMessage("Trwa weryfikacja antyspamowa. Spróbuj ponownie za chwilę.");
       return;
     }
 
@@ -53,10 +53,10 @@ export const Newsletter = () => {
     const response = await fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data),
+      body: JSON.stringify({ ...payload, token }),
     });
 
-    const data = await response.json().catch(() => ({}));
+    const data = await response.json();
 
     if (!response.ok || data?.ok === false) {
       setStatus("error");
@@ -65,12 +65,7 @@ export const Newsletter = () => {
     }
 
     setStatus("success");
-    setMessage(
-      String(
-        data?.message ??
-          "Super! Sprawdź skrzynkę, jeśli poproszę o potwierdzenie.",
-      ),
-    );
+    setMessage(String(data?.message));
     form.reset();
     setIsFormValid(false);
   };
@@ -93,7 +88,7 @@ export const Newsletter = () => {
             required
             placeholder="E-mail*"
             disabled={isSubmitting}
-            className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
+            className="h-12 w-full border border-neutral-200 bg-white px-5 mb-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
         </label>
         {/* honeypot */}
@@ -105,6 +100,20 @@ export const Newsletter = () => {
           className="hidden"
           aria-hidden="true"
         />
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          onSuccess={setToken}
+          options={{ theme: "light" }}
+        />
+        <div className="mt-6 flex justify-center">
+          <button
+            type="submit"
+            disabled={isButtonDisabled}
+            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+          >
+            {isSubmitting ? "Zapisywanie..." : "Wchodzę w to!"}
+          </button>
+        </div>
         <div className="mt-3 min-h-[20px]">
           {status !== "idle" ? (
             <p
@@ -121,15 +130,6 @@ export const Newsletter = () => {
               {isSubmitting ? "Zapisywanie..." : message}
             </p>
           ) : null}
-        </div>
-        <div className="mt-6 flex justify-center">
-          <button
-            type="submit"
-            disabled={isButtonDisabled}
-            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-          >
-            {isSubmitting ? "Zapisywanie..." : "Wchodzę w to!"}
-          </button>
         </div>
       </form>
     </div>

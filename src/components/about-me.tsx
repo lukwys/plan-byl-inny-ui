@@ -14,7 +14,7 @@ export const AboutMe = async () => {
       <div className="relative w-[150px] h-[150px] mb-12 overflow-hidden rounded-full">
         <Image
           src={`${STRAPI_URL}${avatar.url}`}
-          alt="Zdjęcie o mnie"
+          alt={avatar.alternativeText ?? ""}
           fill
           className="object-cover object-center"
           sizes="150px"

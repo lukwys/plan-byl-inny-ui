@@ -2,6 +2,7 @@
 
 import { contactFormSchema } from "@/lib/validation/schemas";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export const ContactForm = () => {
   const [status, setStatus] = useState<
@@ -9,6 +10,7 @@ export const ContactForm = () => {
   >("idle");
   const [message, setMessage] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [token, setToken] = useState("");
 
   const isSubmitting = status === "sending";
   const isButtonDisabled = isSubmitting || !isFormValid;
@@ -41,25 +43,16 @@ export const ContactForm = () => {
     const form = event.currentTarget;
     const payload = buildPayloadFromForm(form);
 
-    const parsed = contactFormSchema.safeParse(payload);
-
-    if (!parsed.success) {
-      setStatus("error");
-      setMessage(parsed.error.issues?.[0]?.message ?? "Uzupełnij formularz.");
-      setIsFormValid(false);
-      return;
-    }
-
     setStatus("sending");
     setMessage("");
 
     const response = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data),
+      body: JSON.stringify({ ...payload, token }),
     });
 
-    const data = await response.json().catch(() => ({}));
+    const data = await response.json();
 
     if (!response.ok || data?.ok === false) {
       setStatus("error");
@@ -74,11 +67,7 @@ export const ContactForm = () => {
   };
 
   return (
-    <form
-      className="mt-10 w-full"
-      onSubmit={handleSubmit}
-      onInput={handleFormInput}
-    >
+    <form onSubmit={handleSubmit} onInput={handleFormInput}>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <label className="block">
           <span className="sr-only">Imię</span>
@@ -121,7 +110,19 @@ export const ContactForm = () => {
           className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
         />
       </label>
-      <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-end">
+      <div className="flex flex-col gap-4 mt-4 items-end">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          onSuccess={setToken}
+          options={{ theme: "light" }}
+        />
+        <button
+          type="submit"
+          disabled={isButtonDisabled}
+          className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+        >
+          {isSubmitting ? "Wysyłanie..." : "Wyślij"}
+        </button>
         {message ? (
           <p
             className={`text-sm ${
@@ -135,13 +136,6 @@ export const ContactForm = () => {
         ) : (
           <span />
         )}
-        <button
-          type="submit"
-          disabled={isButtonDisabled}
-          className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
-        >
-          {isSubmitting ? "Wysyłanie..." : "Wyślij"}
-        </button>
       </div>
     </form>
   );

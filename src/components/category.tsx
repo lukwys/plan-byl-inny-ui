@@ -20,7 +20,7 @@ export const Category = ({ category }: CategoryProps) => {
         {image?.url ? (
           <Image
             src={`${STRAPI_URL}${image.url}`}
-            alt=""
+            alt={image.alternativeText ?? ""}
             fill
             className="object-cover opacity-70 transition-opacity duration-300 group-hover:opacity-90"
             sizes="100vw"
