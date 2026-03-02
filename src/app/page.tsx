@@ -28,8 +28,6 @@ export default async function Home() {
 
   const categories = await getCategories();
 
-  console.log("homepage.baner", homepage.baner);
-
   return (
     <div>
       <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">

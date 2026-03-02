@@ -2,17 +2,18 @@ import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
 
 type ParagraphBlock = {
-  id: number;
+  documentId: string;
   __component: "content.paragraph-md";
   paragraph: string;
 };
 
 type GalleryImage = {
-  id: number;
+  documentId: string;
   url: string;
   alternativeText?: string | null;
   width: number;
   height: number;
+  caption?: string;
 };
 
 export type GalleryBlock = {
