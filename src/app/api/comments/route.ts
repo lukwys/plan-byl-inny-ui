@@ -1,3 +1,4 @@
+import { COMMENTS_FROM_EMAIL, RESEND_API_KEY } from "@/config/resend";
 import { STRAPI_API_TOKEN, STRAPI_URL } from "@/config/strapi";
 import { readStringParam } from "@/lib/http/read-string-param";
 import { createToken, sha256 } from "@/lib/security/tokens";
@@ -6,11 +7,11 @@ import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(RESEND_API_KEY);
 
 export async function POST(req: Request) {
-  const siteUrl = process.env.SITE_URL;
   const body = await req.json().catch(() => null);
+
   if (!body)
     return NextResponse.json(
       { ok: false, error: "INVALID_JSON" },
@@ -21,10 +22,10 @@ export async function POST(req: Request) {
   const authorName = String(body.name ?? "").trim();
   const email = String(body.email ?? "").trim();
   const commentBody = String(body.comment ?? "").trim();
-  const website = String(body.website ?? "").trim(); // honeypot
+  const hp = String(body.hp ?? "").trim(); // honeypot
 
   // honeypot: silent drop
-  if (website) return NextResponse.json({ ok: true });
+  if (hp) return NextResponse.json({ ok: true });
 
   if (!postDocumentId) {
     return NextResponse.json(
@@ -60,6 +61,7 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+
   const createRes = await fetch(`${STRAPI_URL}/api/comments`, {
     method: "POST",
     headers: {
@@ -157,10 +159,9 @@ export async function POST(req: Request) {
     );
   }
 
-  const verifyUrl = `${siteUrl}/api/comments/verify?token=${token}`;
-  const from = process.env.COMMENTS_FROM_EMAIL;
+  const verifyUrl = `${STRAPI_URL}/api/comments/verify?token=${token}`;
 
-  if (!process.env.RESEND_API_KEY || !from) {
+  if (!RESEND_API_KEY || !COMMENTS_FROM_EMAIL) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
@@ -177,7 +178,7 @@ export async function POST(req: Request) {
     `Jeśli to nie Ty, zignoruj tę wiadomość.\n`;
 
   const { error } = await resend.emails.send({
-    from: `Plan był inny <${from}>`,
+    from: `Plan był inny <${COMMENTS_FROM_EMAIL}>`,
     to: email,
     subject,
     text,
@@ -212,9 +213,7 @@ export async function GET(req: Request) {
     );
   }
 
-  const token = process.env.STRAPI_API_TOKEN;
-
-  if (!STRAPI_URL || !token) {
+  if (!STRAPI_URL || !STRAPI_API_TOKEN) {
     return NextResponse.json(
       { ok: false, error: "SERVER_MISCONFIG" },
       { status: 500 },
@@ -234,7 +233,7 @@ export async function GET(req: Request) {
 
   const res = await fetch(`${STRAPI_URL}/api/comments?${qs.toString()}`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${STRAPI_API_TOKEN}`,
     },
     cache: "no-store",
   });
