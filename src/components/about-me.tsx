@@ -1,13 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
-import { AboutMeModel } from "@/types/about-me";
+import { strapiService } from "@/services/strapi";
 
 export const AboutMe = async () => {
-  const { avatar, title, bio } = await requestData<AboutMeModel>(
-    `${STRAPI_URL}/api/about-me?populate=avatar`,
-  );
+  const { title, bio, avatar } = await strapiService.getAboutMe();
 
   return (
     <div className="flex flex-col items-center text-center">

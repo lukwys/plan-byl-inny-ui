@@ -1,5 +1,6 @@
 import { STRAPI_URL } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
+import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
 import { HomePageModel } from "@/types/home";
@@ -75,5 +76,10 @@ export const strapiService = {
         next: { revalidate: 300 },
       },
     );
+  },
+  async getAboutMe() {
+    return requestData<AboutMeModel>(`${STRAPI_URL}/api/about-me?populate=*`, {
+      next: { revalidate: 86400 },
+    });
   },
 };

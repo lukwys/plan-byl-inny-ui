@@ -1,15 +1,10 @@
 import { SocialLink } from "@/components/social-link";
 import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
 import { strapiService } from "@/services/strapi";
-import { AboutMeModel } from "@/types/about-me";
 import Image from "next/image";
 
 const AboutMe = async () => {
-  const { header_image, title, bio, avatar } = await requestData<AboutMeModel>(
-    `${STRAPI_URL}/api/about-me?populate=*`,
-  );
-
+  const { header_image, title, bio, avatar } = await strapiService.getAboutMe();
   const socialLinks = await strapiService.getSocialLinks();
 
   return (
