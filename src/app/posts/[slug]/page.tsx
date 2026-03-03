@@ -7,8 +7,6 @@ import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
-import { requestData } from "@/lib/http/requestData";
-import { SocialLinkModel } from "@/types/social-link";
 import { SocialLink } from "@/components/social-link";
 import { getCategories } from "@/server/strapi/categories";
 import { Category } from "@/components/category";
@@ -18,9 +16,7 @@ import { strapiService } from "@/services/strapi";
 
 export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(params.slug);
-  const socialLinks = await requestData<SocialLinkModel[]>(
-    `${STRAPI_URL}/api/links?populate=icon`,
-  );
+  const socialLinks = await strapiService.getSocialLinks();
   const categories = await getCategories();
 
   if (!post) notFound();

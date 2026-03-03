@@ -3,13 +3,13 @@ import { requestData } from "@/lib/http/requestData";
 import { PostModel } from "@/types/post";
 import { HomePageModel } from "@/types/home";
 import { getCategories } from "@/server/strapi/categories";
-import { SocialLinkModel } from "@/types/social-link";
 import Image from "next/image";
 import { BlogPost } from "@/components/blog-post";
 import { AboutMe } from "@/components/about-me";
 import { SocialLink } from "@/components/social-link";
 import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
+import { strapiService } from "@/services/strapi";
 
 export default async function CategoryPage({
   params,
@@ -26,9 +26,7 @@ export default async function CategoryPage({
 
   const posts = await requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${qs}`);
 
-  const socialLinks = await requestData<SocialLinkModel[]>(
-    `${STRAPI_URL}/api/links?populate=icon`,
-  );
+  const socialLinks = await strapiService.getSocialLinks();
 
   const categories = await getCategories();
 
