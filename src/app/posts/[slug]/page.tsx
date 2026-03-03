@@ -8,7 +8,6 @@ import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
 import { SocialLink } from "@/components/social-link";
-import { getCategories } from "@/server/strapi/categories";
 import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
 import { AuthorNote } from "@/components/author-note";
@@ -17,7 +16,7 @@ import { strapiService } from "@/services/strapi";
 export default async function PostPage({ params }: { params: Params }) {
   const post = await getPostBySlug(params.slug);
   const socialLinks = await strapiService.getSocialLinks();
-  const categories = await getCategories();
+  const categories = await strapiService.getCategories();
 
   if (!post) notFound();
 

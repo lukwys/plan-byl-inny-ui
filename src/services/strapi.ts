@@ -1,5 +1,6 @@
 import { STRAPI_URL } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
+import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
 import { HomePageModel } from "@/types/home";
 import { PostModel } from "@/types/post";
@@ -29,6 +30,23 @@ export const strapiService = {
       `${STRAPI_URL}/api/posts?${qs.toString()}`,
       undefined,
       { revalidate: 60 },
+    );
+  },
+  async getCategories(): Promise<CategoryModel[]> {
+    const qs = new URLSearchParams();
+
+    qs.set("sort", "name:asc");
+    qs.set("pagination[pageSize]", "100");
+    qs.set("filters[posts][id][$notNull]", "true");
+    qs.set("fields[0]", "documentId");
+    qs.set("fields[1]", "name");
+    qs.set("fields[2]", "slug");
+
+    qs.set("populate[image][fields][0]", "url");
+    qs.set("populate[image][fields][1]", "alternativeText");
+
+    return requestData<CategoryModel[]>(
+      `${STRAPI_URL}/api/categories?${qs.toString()}`,
     );
   },
   async getSocialLinks(): Promise<SocialLinkModel[]> {

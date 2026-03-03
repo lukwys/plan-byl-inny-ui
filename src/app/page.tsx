@@ -1,4 +1,3 @@
-import { getCategories } from "@/server/strapi/categories";
 import { BlogPost } from "@/components/blog-post";
 import { AboutMe } from "@/components/about-me";
 import { SocialLink } from "@/components/social-link";
@@ -10,7 +9,7 @@ import { HomeBaner } from "@/components/home-baner";
 export default async function Home() {
   const posts = await strapiService.getPosts();
   const socialLinks = await strapiService.getSocialLinks();
-  const categories = await getCategories();
+  const categories = await strapiService.getCategories();
 
   return (
     <div>
