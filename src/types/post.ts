@@ -2,7 +2,7 @@ import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
 
 type ParagraphBlock = {
-  documentId: string;
+  id: number;
   __component: "content.paragraph-md";
   paragraph: string;
 };
