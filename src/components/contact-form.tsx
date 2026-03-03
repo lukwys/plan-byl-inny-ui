@@ -1,73 +1,43 @@
 "use client";
 
-import { contactFormSchema } from "@/lib/validation/schemas";
-import { useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { contactAction, ContactState } from "@/actions/contact-action";
+import { contactFormSchema } from "@/lib/validation/schemas";
+import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
+
+const initialState: ContactState = {
+  success: false,
+};
 
 export const ContactForm = () => {
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
-  const [message, setMessage] = useState("");
+  const [state, action, isPending] = useActionState(
+    contactAction,
+    initialState,
+  );
+
   const [isFormValid, setIsFormValid] = useState(false);
   const [token, setToken] = useState("");
-
-  const isSubmitting = status === "sending";
-  const isButtonDisabled = isSubmitting || !isFormValid;
-
-  const buildPayloadFromForm = (form: HTMLFormElement) => {
-    const formData = new FormData(form);
-    return {
-      name: String(formData.get("name") ?? ""),
-      email: String(formData.get("email") ?? ""),
-      content: String(formData.get("content") ?? ""),
-      hp: String(formData.get("hp") ?? ""), // honeypot
-    };
-  };
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    const payload = buildPayloadFromForm(form);
-
+    const formData = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(formData.entries());
     setIsFormValid(contactFormSchema.safeParse(payload).success);
-
-    if (status !== "idle") {
-      setStatus("idle");
-      setMessage("");
-    }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const payload = buildPayloadFromForm(form);
-
-    setStatus("sending");
-    setMessage("");
-
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...payload, token }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || data?.ok === false) {
-      setStatus("error");
-      setMessage(String(data?.error ?? "Coś poszło nie tak."));
-      return;
+  useEffect(() => {
+    if (state.success) {
+      formRef.current?.reset();
+      setIsFormValid(false);
+      setToken("");
     }
+  }, [state.success]);
 
-    setStatus("success");
-    setMessage(String(data?.message ?? "Dzięki! Wiadomość wysłana."));
-    form.reset();
-    setIsFormValid(false);
-  };
+  const isButtonDisabled = isPending || !isFormValid || !token;
 
   return (
-    <form onSubmit={handleSubmit} onInput={handleFormInput}>
+    <form ref={formRef} action={action} onInput={handleFormInput}>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <label className="block">
           <span className="sr-only">Imię</span>
@@ -76,9 +46,12 @@ export const ContactForm = () => {
             name="name"
             required
             placeholder="Imię*"
-            disabled={isSubmitting}
+            disabled={isPending}
             className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
+          {state.errors?.name && (
+            <p className="mt-1 text-xs text-red-600">{state.errors?.name}</p>
+          )}
         </label>
         <label className="block">
           <span className="sr-only">E-mail</span>
@@ -87,9 +60,12 @@ export const ContactForm = () => {
             name="email"
             required
             placeholder="E-mail*"
-            disabled={isSubmitting}
+            disabled={isPending}
             className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
+          {state.errors?.email && (
+            <p className="mt-1 text-xs text-red-600">{state.errors?.email}</p>
+          )}
         </label>
       </div>
       <input
@@ -106,13 +82,16 @@ export const ContactForm = () => {
           name="content"
           required
           placeholder="Wiadomość..."
-          disabled={isSubmitting}
+          disabled={isPending}
           className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
         />
+        {state.errors?.content && (
+          <p className="mt-1 text-xs text-red-600">{state.errors?.content}</p>
+        )}
       </label>
       <div className="flex flex-col gap-4 mt-4 items-end">
         <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          siteKey={TURNSTILE_SITE_KEY ?? ""}
           onSuccess={setToken}
           options={{ theme: "light" }}
         />
@@ -121,20 +100,20 @@ export const ContactForm = () => {
           disabled={isButtonDisabled}
           className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
         >
-          {isSubmitting ? "Wysyłanie..." : "Wyślij"}
+          {isPending ? "Wysyłanie..." : "Wyślij"}
         </button>
-        {message ? (
+        {(state.message || state.error) && (
           <p
-            className={`text-sm ${
-              status === "success" ? "text-green-700" : "text-red-700"
-            }`}
+            className={`text-sm ${state.success ? "text-green-700" : "text-red-700"}`}
             role="status"
             aria-live="polite"
           >
-            {isSubmitting ? "Wysyłanie..." : message}
+            {state.success
+              ? state.message
+              : state.error === "VALIDATION_FAILED"
+                ? "Popraw błędy w formularzu"
+                : state.error}
           </p>
-        ) : (
-          <span />
         )}
       </div>
     </form>
