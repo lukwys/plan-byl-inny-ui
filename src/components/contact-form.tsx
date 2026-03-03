@@ -6,15 +6,10 @@ import { contactAction, ContactState } from "@/actions/contact-action";
 import { contactFormSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
 
-const initialState: ContactState = {
-  success: false,
-};
-
 export const ContactForm = () => {
-  const [state, action, isPending] = useActionState(
-    contactAction,
-    initialState,
-  );
+  const [state, action, isPending] = useActionState(contactAction, {
+    success: false,
+  });
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [token, setToken] = useState("");

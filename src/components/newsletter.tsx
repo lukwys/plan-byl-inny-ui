@@ -1,74 +1,35 @@
 "use client";
 
-import { newsletterSchema } from "@/lib/validation/schemas";
-import { useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-
-const buildPayloadFromForm = (form: HTMLFormElement) => {
-  const formData = new FormData(form);
-  return {
-    email: String(formData.get("email") ?? ""),
-    hp: String(formData.get("hp") ?? ""),
-  };
-};
+import { newsletterAction, NewsletterState } from "@/actions/newsletter-action";
+import { newsletterSchema } from "@/lib/validation/schemas";
+import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
 
 export const Newsletter = () => {
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
-  const [message, setMessage] = useState("");
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const isSubmitting = status === "sending";
-  const isButtonDisabled = isSubmitting || !isFormValid;
+  const [state, action, isPending] = useActionState(newsletterAction, {
+    success: false,
+  });
+
+  useEffect(() => {
+    if (state.success) {
+      formRef.current?.reset();
+      setToken("");
+      setIsFormValid(false);
+    }
+  }, [state.success]);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
-    const form = event.currentTarget;
-    const payload = buildPayloadFromForm(form);
-
+    const formData = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(formData.entries());
     setIsFormValid(newsletterSchema.safeParse(payload).success);
-
-    if (status !== "idle") {
-      setStatus("idle");
-      setMessage("");
-    }
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const payload = buildPayloadFromForm(form);
-
-    if (token === "") {
-      setStatus("error");
-      setMessage("Trwa weryfikacja antyspamowa. Spróbuj ponownie za chwilę.");
-      return;
-    }
-
-    setStatus("sending");
-    setMessage("");
-
-    const response = await fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...payload, token }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || data?.ok === false) {
-      setStatus("error");
-      setMessage(String(data?.error ?? "Coś poszło nie tak."));
-      return;
-    }
-
-    setStatus("success");
-    setMessage(String(data?.message));
-    form.reset();
-    setIsFormValid(false);
-  };
+  const isButtonDisabled = isPending || !isFormValid || !token;
 
   return (
     <div className="text-center">
@@ -79,7 +40,7 @@ export const Newsletter = () => {
         Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak
         życie zweryfikowało moje plany.
       </p>
-      <form onSubmit={handleSubmit} onInput={handleFormInput}>
+      <form ref={formRef} action={action} onInput={handleFormInput}>
         <label className="block">
           <span className="sr-only">E-mail</span>
           <input
@@ -87,11 +48,15 @@ export const Newsletter = () => {
             name="email"
             required
             placeholder="E-mail*"
-            disabled={isSubmitting}
-            className="h-12 w-full border border-neutral-200 bg-white px-5 mb-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
+            disabled={isPending}
+            className="h-12 w-full border border-neutral-200 bg-white px-5 mb-2 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
+          {state.errors?.email && (
+            <p className="text-red-700 text-xs mb-3 text-left">
+              {state.errors.email}
+            </p>
+          )}
         </label>
-        {/* honeypot */}
         <input
           type="text"
           name="hp"
@@ -101,7 +66,7 @@ export const Newsletter = () => {
           aria-hidden="true"
         />
         <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          siteKey={TURNSTILE_SITE_KEY ?? ""}
           onSuccess={setToken}
           options={{ theme: "light" }}
         />
@@ -109,27 +74,24 @@ export const Newsletter = () => {
           <button
             type="submit"
             disabled={isButtonDisabled}
-            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2"
+            className="h-12 w-64 bg-black text-base font-semibold text-white transition hover:bg-neutral-800 disabled:opacity-50"
           >
-            {isSubmitting ? "Zapisywanie..." : "Wchodzę w to!"}
+            {isPending ? "Zapisywanie..." : "Wchodzę w to!"}
           </button>
         </div>
         <div className="mt-3 min-h-[20px]">
-          {status !== "idle" ? (
+          {(state.message || state.error) && (
             <p
-              className={`text-sm ${
-                status === "success"
-                  ? "text-green-700"
-                  : status === "error"
-                    ? "text-red-700"
-                    : "text-neutral-600"
-              }`}
+              className={`text-sm ${state.success ? "text-green-700" : "text-red-700"}`}
               role="status"
-              aria-live="polite"
             >
-              {isSubmitting ? "Zapisywanie..." : message}
+              {state.success
+                ? state.message
+                : state.error === "VALIDATION_FAILED"
+                  ? "Błędny e-mail"
+                  : state.error}
             </p>
-          ) : null}
+          )}
         </div>
       </form>
     </div>
