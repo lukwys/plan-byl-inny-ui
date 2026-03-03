@@ -18,37 +18,45 @@ export const strapiService = {
     );
   },
   async getPosts(categorySlug?: string): Promise<PostModel[]> {
-    const qs = new URLSearchParams();
-
-    qs.set("sort[0]", "date:asc");
-    qs.set("populate[0]", "cover_image");
-    qs.set("populate[1]", "category");
-
-    if (categorySlug) {
-      qs.set("filters[category][slug][$eq]", categorySlug);
-    }
-
-    return requestData<PostModel[]>(
-      `${STRAPI_URL}/api/posts?${qs.toString()}`,
-      undefined,
-      { revalidate: 60 },
+    const query = qs.stringify(
+      {
+        sort: ["date:asc"],
+        populate: ["cover_image", "category"],
+        filters: categorySlug
+          ? { category: { slug: { $eq: categorySlug } } }
+          : {},
+      },
+      { encodeValuesOnly: true },
     );
+
+    return requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${query}`, {
+      next: { revalidate: 60 },
+    });
   },
   async getCategories(): Promise<CategoryModel[]> {
-    const qs = new URLSearchParams();
-
-    qs.set("sort", "name:asc");
-    qs.set("pagination[pageSize]", "100");
-    qs.set("filters[posts][id][$notNull]", "true");
-    qs.set("fields[0]", "documentId");
-    qs.set("fields[1]", "name");
-    qs.set("fields[2]", "slug");
-
-    qs.set("populate[image][fields][0]", "url");
-    qs.set("populate[image][fields][1]", "alternativeText");
+    const query = qs.stringify(
+      {
+        sort: ["name:asc"],
+        pagination: {
+          pageSize: 100,
+        },
+        filters: {
+          posts: {
+            id: { $notNull: true },
+          },
+        },
+        fields: ["documentId", "name", "slug"],
+        populate: {
+          image: {
+            fields: ["url", "alternativeText"],
+          },
+        },
+      },
+      { encodeValuesOnly: true },
+    );
 
     return requestData<CategoryModel[]>(
-      `${STRAPI_URL}/api/categories?${qs.toString()}`,
+      `${STRAPI_URL}/api/categories?${query}`,
     );
   },
   async getPostBySlug(slug: string): Promise<PostPageModel | null> {
@@ -92,22 +100,46 @@ export const strapiService = {
   async getPublishedComments(
     postDocumentId: string,
   ): Promise<PublicCommentModel[]> {
-    const qs = new URLSearchParams({
-      "filters[post][documentId][$eq]": postDocumentId,
-      "filters[commentStatus][$eq]": "published",
-      sort: "createdAt:desc",
-      "pagination[pageSize]": "100",
-    });
+    const query = qs.stringify(
+      {
+        filters: {
+          post: {
+            documentId: { $eq: postDocumentId },
+          },
+          commentStatus: { $eq: "published" },
+        },
+        sort: ["createdAt:desc"],
+        pagination: {
+          pageSize: 100,
+        },
+      },
+      { encodeValuesOnly: true },
+    );
 
     return requestData<PublicCommentModel[]>(
-      `${STRAPI_URL}/api/comments?${qs.toString()}`,
+      `${STRAPI_URL}/api/comments?${query}`,
       {
         next: { revalidate: 300 },
       },
     );
   },
-  async getAboutMe() {
-    return requestData<AboutMeModel>(`${STRAPI_URL}/api/about-me?populate=*`, {
+  async getAboutMe(): Promise<AboutMeModel> {
+    const query = qs.stringify(
+      {
+        populate: {
+          avatar: {
+            fields: ["url", "alternativeText"],
+          },
+          header_image: {
+            fields: ["url", "alternativeText"],
+          },
+        },
+        fields: ["title", "bio"],
+      },
+      { encodeValuesOnly: true },
+    );
+
+    return requestData<AboutMeModel>(`${STRAPI_URL}/api/about-me?${query}`, {
       next: { revalidate: 86400 },
     });
   },
