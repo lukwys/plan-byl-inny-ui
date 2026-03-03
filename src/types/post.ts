@@ -34,7 +34,6 @@ export type PostPageModel = {
 export type Params = { slug: string };
 
 export type PostModel = {
-  id: number;
   documentId: string;
   date: string;
   title: string;

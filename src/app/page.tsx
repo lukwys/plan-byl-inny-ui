@@ -1,6 +1,3 @@
-import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
-import { PostModel } from "@/types/post";
 import { getCategories } from "@/server/strapi/categories";
 import { BlogPost } from "@/components/blog-post";
 import { AboutMe } from "@/components/about-me";
@@ -11,14 +8,8 @@ import { strapiService } from "@/services/strapi";
 import { HomeBaner } from "@/components/home-baner";
 
 export default async function Home() {
-  const posts = await requestData<PostModel[]>(
-    `${STRAPI_URL}/api/posts?populate=cover_image&populate=category`,
-    undefined,
-    { revalidate: 60 },
-  );
-
+  const posts = await strapiService.getPosts();
   const socialLinks = await strapiService.getSocialLinks();
-
   const categories = await getCategories();
 
   return (

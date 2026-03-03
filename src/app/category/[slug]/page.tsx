@@ -1,6 +1,3 @@
-import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
-import { PostModel } from "@/types/post";
 import { getCategories } from "@/server/strapi/categories";
 import { BlogPost } from "@/components/blog-post";
 import { AboutMe } from "@/components/about-me";
@@ -15,12 +12,7 @@ export default async function CategoryPage({
 }: {
   params: { slug: string };
 }) {
-  const qs =
-    `populate=cover_image&populate=category` +
-    `&filters[category][slug][$eq]=${encodeURIComponent(params.slug)}`;
-
-  const posts = await requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${qs}`);
-
+  const posts = await strapiService.getPosts(params.slug);
   const socialLinks = await strapiService.getSocialLinks();
 
   const categories = await getCategories();

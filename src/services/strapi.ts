@@ -2,6 +2,7 @@ import { STRAPI_URL } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
 import { PublicCommentModel } from "@/types/comments";
 import { HomePageModel } from "@/types/home";
+import { PostModel } from "@/types/post";
 import { SocialLinkModel } from "@/types/social-link";
 
 export const strapiService = {
@@ -11,6 +12,23 @@ export const strapiService = {
       {
         next: { revalidate: 3600 },
       },
+    );
+  },
+  async getPosts(categorySlug?: string): Promise<PostModel[]> {
+    const qs = new URLSearchParams();
+
+    qs.set("sort[0]", "date:asc");
+    qs.set("populate[0]", "cover_image");
+    qs.set("populate[1]", "category");
+
+    if (categorySlug) {
+      qs.set("filters[category][slug][$eq]", categorySlug);
+    }
+
+    return requestData<PostModel[]>(
+      `${STRAPI_URL}/api/posts?${qs.toString()}`,
+      undefined,
+      { revalidate: 60 },
     );
   },
   async getSocialLinks(): Promise<SocialLinkModel[]> {
