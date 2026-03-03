@@ -1,38 +1,35 @@
-type NextFetchInit = RequestInit & {
-  next?: { revalidate?: number };
-};
+interface RequestOptions extends Omit<RequestInit, "next"> {
+  revalidate?: number | false;
+}
 
-const DEFAULT_REVALIDATE = 60 * 60;
+const DEFAULT_REVALIDATE = 3600;
 
 export async function requestData<T>(
-  input: RequestInfo,
-  init?: NextFetchInit,
-  options?: { revalidate?: number | false },
+  path: string,
+  options: RequestOptions = {},
 ): Promise<T> {
-  const revalidate =
-    options?.revalidate === false
-      ? undefined
-      : (options?.revalidate ?? init?.next?.revalidate ?? DEFAULT_REVALIDATE);
+  const { revalidate, ...fetchOptions } = options;
 
-  const response = await fetch(input, {
-    ...init,
-    cache: options?.revalidate === false ? "no-store" : init?.cache,
+  const revalidateValue =
+    revalidate === false ? undefined : (revalidate ?? DEFAULT_REVALIDATE);
+
+  const response = await fetch(`${path}`, {
+    ...fetchOptions,
+    cache: revalidate === false ? "no-store" : undefined,
     next:
-      options?.revalidate === false
-        ? undefined
-        : {
-            ...init?.next,
-            revalidate,
-          },
+      revalidateValue !== undefined
+        ? { revalidate: revalidateValue }
+        : undefined,
   });
 
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
+    const errorBody = await response.text().catch(() => "No error body");
     throw new Error(
-      `Request failed (${response.status}): ${String(input)} ${text.slice(0, 200)}`,
+      `[API Error] ${response.status} | ${path} | ${errorBody.slice(0, 150)}`,
     );
   }
 
-  const data = await response.json();
-  return data.data as T;
+  const result = await response.json();
+
+  return result?.data as T;
 }
