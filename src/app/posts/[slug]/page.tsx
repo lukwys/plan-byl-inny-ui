@@ -3,7 +3,6 @@ import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import { Comments } from "@/components/comments/comments";
 import { STRAPI_URL } from "@/config/strapi";
-import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
@@ -14,7 +13,7 @@ import { AuthorNote } from "@/components/author-note";
 import { strapiService } from "@/services/strapi";
 
 export default async function PostPage({ params }: { params: Params }) {
-  const post = await getPostBySlug(params.slug);
+  const post = await strapiService.getPostBySlug(params.slug);
   const socialLinks = await strapiService.getSocialLinks();
   const categories = await strapiService.getCategories();
 

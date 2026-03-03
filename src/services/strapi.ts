@@ -4,8 +4,9 @@ import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
 import { HomePageModel } from "@/types/home";
-import { PostModel } from "@/types/post";
+import { PostModel, PostPageModel } from "@/types/post";
 import { SocialLinkModel } from "@/types/social-link";
+import qs from "qs";
 
 export const strapiService = {
   async getHomepage(): Promise<HomePageModel> {
@@ -49,6 +50,34 @@ export const strapiService = {
     return requestData<CategoryModel[]>(
       `${STRAPI_URL}/api/categories?${qs.toString()}`,
     );
+  },
+  async getPostBySlug(slug: string): Promise<PostPageModel | null> {
+    const query = qs.stringify(
+      {
+        filters: {
+          slug: { $eq: slug },
+        },
+        populate: {
+          cover_image: true,
+          content_blocks: {
+            on: {
+              "content.gallery": {
+                populate: { image_gallery: true },
+              },
+              "content.paragraph-md": true,
+            },
+          },
+        },
+      },
+      { encodeValuesOnly: true },
+    );
+
+    const posts = await requestData<PostPageModel[]>(
+      `${STRAPI_URL}/api/posts?${query}`,
+      { next: { revalidate: 3600 } },
+    );
+
+    return posts[0] ?? null;
   },
   async getSocialLinks(): Promise<SocialLinkModel[]> {
     return requestData<SocialLinkModel[]>(
