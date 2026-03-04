@@ -2,7 +2,11 @@
 
 import { z } from "zod";
 import { Resend } from "resend";
-import { newsletterSchema } from "@/lib/validation/schemas";
+import {
+  NewsletterFormData,
+  newsletterSchema,
+  ZodErrors,
+} from "@/lib/validation/schemas";
 import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { createToken, sha256 } from "@/lib/security/tokens";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
@@ -14,7 +18,7 @@ const resend = new Resend(RESEND_API_KEY);
 export type NewsletterState = {
   success: boolean;
   error?: string;
-  errors?: Record<string, any>;
+  errors?: ZodErrors<NewsletterFormData>;
   message?: string;
 };
 
@@ -29,11 +33,12 @@ export async function newsletterAction(
     return {
       success: false,
       error: "VALIDATION_FAILED",
-      errors: z.treeifyError(validatedFields.error) as Record<string, any>,
+      errors: z.flattenError(validatedFields.error),
     };
   }
 
   const { email, hp } = validatedFields.data;
+
   if (hp) return { success: true, message: "OK" };
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");

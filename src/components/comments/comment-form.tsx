@@ -47,14 +47,14 @@ export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
             <input
               type="text"
               name="name"
-              required
+              // required
               placeholder="Imię*"
               disabled={isPending}
               className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
             />
-            {state.errors?.name && (
+            {state.errors?.fieldErrors.name && (
               <p className="text-red-700 text-xs mt-1 text-left">
-                {state.errors.name}
+                {state.errors.fieldErrors.name}
               </p>
             )}
           </label>
@@ -68,9 +68,9 @@ export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
               disabled={isPending}
               className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
             />
-            {state.errors?.email && (
+            {state.errors?.fieldErrors.email && (
               <p className="text-red-700 text-xs mt-1 text-left">
-                {state.errors.email}
+                {state.errors.fieldErrors.email}
               </p>
             )}
           </label>
@@ -85,9 +85,9 @@ export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
             disabled={isPending}
             className="w-full border border-neutral-200 bg-white p-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60 resize-none"
           />
-          {state.errors?.comment && (
+          {state.errors?.fieldErrors.comment && (
             <p className="text-red-700 text-xs mt-1 text-left">
-              {state.errors.comment}
+              {state.errors.fieldErrors.comment}
             </p>
           )}
         </label>

@@ -2,7 +2,11 @@
 
 import { Resend } from "resend";
 import { z } from "zod";
-import { contactFormSchema } from "@/lib/validation/schemas";
+import {
+  ContactFormData,
+  contactFormSchema,
+  ZodErrors,
+} from "@/lib/validation/schemas";
 import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL } from "@/config/resend";
 
@@ -11,7 +15,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export type ContactState = {
   success: boolean;
   error?: string;
-  errors?: Record<string, any>;
+  errors?: ZodErrors<ContactFormData>;
   message?: string;
 };
 
@@ -23,12 +27,10 @@ export async function contactAction(
   const validatedFields = contactFormSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    const treeErrors = z.treeifyError(validatedFields.error);
-
     return {
       success: false,
       error: "VALIDATION_FAILED",
-      errors: treeErrors as Record<string, any>,
+      errors: z.flattenError(validatedFields.error),
     };
   }
 

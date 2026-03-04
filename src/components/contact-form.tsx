@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { contactAction, ContactState } from "@/actions/contact-action";
+import { contactAction } from "@/actions/contact-action";
 import { contactFormSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
 
@@ -44,8 +44,10 @@ export const ContactForm = () => {
             disabled={isPending}
             className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
-          {state.errors?.name && (
-            <p className="mt-1 text-xs text-red-600">{state.errors?.name}</p>
+          {state.errors?.fieldErrors.name && (
+            <p className="mt-1 text-xs text-red-600">
+              {state.errors?.fieldErrors.name}
+            </p>
           )}
         </label>
         <label className="block">
@@ -58,8 +60,10 @@ export const ContactForm = () => {
             disabled={isPending}
             className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
-          {state.errors?.email && (
-            <p className="mt-1 text-xs text-red-600">{state.errors?.email}</p>
+          {state.errors?.fieldErrors.email && (
+            <p className="mt-1 text-xs text-red-600">
+              {state.errors?.fieldErrors.email}
+            </p>
           )}
         </label>
       </div>
@@ -80,8 +84,10 @@ export const ContactForm = () => {
           disabled={isPending}
           className="h-48 w-full resize-none border border-neutral-200 bg-white px-5 py-4 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
         />
-        {state.errors?.content && (
-          <p className="mt-1 text-xs text-red-600">{state.errors?.content}</p>
+        {state.errors?.fieldErrors.content && (
+          <p className="mt-1 text-xs text-red-600">
+            {state.errors?.fieldErrors.content}
+          </p>
         )}
       </label>
       <div className="flex flex-col gap-4 mt-4 items-end">

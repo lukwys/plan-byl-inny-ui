@@ -2,7 +2,11 @@
 
 import { z } from "zod";
 import { Resend } from "resend";
-import { commentFormSchema } from "@/lib/validation/schemas";
+import {
+  CommentFormData,
+  commentFormSchema,
+  ZodErrors,
+} from "@/lib/validation/schemas";
 import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { createToken, sha256 } from "@/lib/security/tokens";
 import { CONTACT_FROM_EMAIL, RESEND_API_KEY } from "@/config/resend";
@@ -14,7 +18,7 @@ const resend = new Resend(RESEND_API_KEY);
 export type CommentState = {
   success: boolean;
   error?: string;
-  errors?: Record<string, any>;
+  errors?: ZodErrors<CommentFormData>;
   message?: string;
 };
 
@@ -29,7 +33,7 @@ export async function commentAction(
     return {
       success: false,
       error: "VALIDATION_FAILED",
-      errors: z.treeifyError(validatedFields.error) as Record<string, any>,
+      errors: z.flattenError(validatedFields.error),
     };
   }
 
