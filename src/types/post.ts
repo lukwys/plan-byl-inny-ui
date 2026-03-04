@@ -2,7 +2,7 @@ import { CategoryModel } from "./category";
 import { StrapiImage } from "./strapi";
 
 type ParagraphBlock = {
-  documentId: string;
+  id: number;
   __component: "content.paragraph-md";
   paragraph: string;
 };
@@ -34,7 +34,6 @@ export type PostPageModel = {
 export type Params = { slug: string };
 
 export type PostModel = {
-  id: number;
   documentId: string;
   date: string;
   title: string;

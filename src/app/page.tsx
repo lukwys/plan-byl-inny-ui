@@ -1,45 +1,19 @@
-import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
-import { PostModel } from "@/types/post";
-import { HomePageModel } from "@/types/home";
-import { getCategories } from "@/server/strapi/categories";
-import { SocialLinkModel } from "@/types/social-link";
-import Image from "next/image";
 import { BlogPost } from "@/components/blog-post";
 import { AboutMe } from "@/components/about-me";
 import { SocialLink } from "@/components/social-link";
 import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
+import { strapiService } from "@/services/strapi";
+import { HomeBaner } from "@/components/home-baner";
 
 export default async function Home() {
-  const homepage = await requestData<HomePageModel>(
-    `${STRAPI_URL}/api/homepage?populate=baner`,
-  );
-
-  const posts = await requestData<PostModel[]>(
-    `${STRAPI_URL}/api/posts?populate=cover_image&populate=category`,
-    undefined,
-    { revalidate: 60 },
-  );
-
-  const socialLinks = await requestData<SocialLinkModel[]>(
-    `${STRAPI_URL}/api/links?populate=icon`,
-  );
-
-  const categories = await getCategories();
+  const posts = await strapiService.getPosts();
+  const socialLinks = await strapiService.getSocialLinks();
+  const categories = await strapiService.getCategories();
 
   return (
     <div>
-      <div className="relative w-full overflow-hidden aspect-[16/9] sm:aspect-[3/1]">
-        <Image
-          src={`${STRAPI_URL}${homepage.baner.url}`}
-          alt={homepage.baner.alternativeText ?? ""}
-          fill
-          className="object-cover object-center"
-          priority
-          sizes="100vw"
-        />
-      </div>
+      <HomeBaner />
       <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12">
         <div className="lg:col-start-2 lg:col-span-6">
           <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">

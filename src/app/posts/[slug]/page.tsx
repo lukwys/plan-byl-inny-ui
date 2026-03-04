@@ -2,30 +2,24 @@ import { AboutMe } from "@/components/about-me";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import { Comments } from "@/components/comments/comments";
-import { getPublishedComments } from "@/lib/comments/get-published-comments";
 import { STRAPI_URL } from "@/config/strapi";
-import { getPostBySlug } from "@/server/strapi/posts";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
-import { requestData } from "@/lib/http/requestData";
-import { SocialLinkModel } from "@/types/social-link";
 import { SocialLink } from "@/components/social-link";
-import { getCategories } from "@/server/strapi/categories";
 import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
 import { AuthorNote } from "@/components/author-note";
+import { strapiService } from "@/services/strapi";
 
 export default async function PostPage({ params }: { params: Params }) {
-  const post = await getPostBySlug(params.slug);
-  const socialLinks = await requestData<SocialLinkModel[]>(
-    `${STRAPI_URL}/api/links?populate=icon`,
-  );
-  const categories = await getCategories();
+  const post = await strapiService.getPostBySlug(params.slug);
+  const socialLinks = await strapiService.getSocialLinks();
+  const categories = await strapiService.getCategories();
 
   if (!post) notFound();
 
-  const comments = await getPublishedComments(post.documentId);
+  const comments = await strapiService.getPublishedComments(post.documentId);
 
   return (
     <div>
@@ -49,7 +43,7 @@ export default async function PostPage({ params }: { params: Params }) {
               switch (block.__component) {
                 case "content.paragraph-md":
                   return (
-                    <div key={block.documentId}>
+                    <div key={block.id}>
                       <ReactMarkdown
                         components={{
                           p: ({ children }) => {

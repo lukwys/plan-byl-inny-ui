@@ -1,13 +1,9 @@
 import { ContactForm } from "@/components/contact-form";
 import { SocialLink } from "@/components/social-link";
-import { STRAPI_URL } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
-import { SocialLinkModel } from "@/types/social-link";
+import { strapiService } from "@/services/strapi";
 
 const ContactPage = async () => {
-  const socialLinks = await requestData<SocialLinkModel[]>(
-    `${STRAPI_URL}/api/links?populate=icon`,
-  );
+  const socialLinks = await strapiService.getSocialLinks();
 
   return (
     <div className="container mx-auto w-full px-4 py-10 sm:py-14">
