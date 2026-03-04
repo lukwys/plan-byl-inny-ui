@@ -1,6 +1,6 @@
 import { PublicCommentModel } from "@/types/comments";
 import { Comment } from "./comment";
-import { CommentsForm } from "./comments-form";
+import { CommentForm } from "./comment-form";
 
 type CommentsProps = {
   comments: PublicCommentModel[];
@@ -20,7 +20,7 @@ export const Comments = ({ comments, postDocumentId }: CommentsProps) => {
           Zapraszam do dyskusji 🙂
         </p>
       )}
-      <CommentsForm postDocumentId={postDocumentId} />
+      <CommentForm postDocumentId={postDocumentId} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache"; // Dodajemy tylko to
 import { readStringParam } from "@/lib/http/read-string-param";
 import { sha256 } from "@/lib/security/tokens";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
@@ -94,13 +95,8 @@ export async function GET(req: Request) {
   );
 
   if (!updateCommentRes.ok) {
-    const errText = await updateCommentRes.text().catch(() => "");
     return NextResponse.json(
-      {
-        ok: false,
-        error: "COMMENT_PUBLISH_FAILED",
-        details: errText.slice(0, 500),
-      },
+      { ok: false, error: "COMMENT_PUBLISH_FAILED" },
       { status: 502 },
     );
   }
@@ -125,6 +121,7 @@ export async function GET(req: Request) {
   const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
   if (postSlug) {
+    revalidatePath(`/posts/${postSlug}`);
     return NextResponse.redirect(
       `${siteUrl}/posts/${postSlug}?comment=verified`,
     );
