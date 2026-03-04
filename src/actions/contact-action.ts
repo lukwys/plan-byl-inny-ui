@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { contactFormSchema } from "@/lib/validation/schemas";
 import { validateTurnstile } from "@/lib/validation/validate-turnstile";
+import { CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL } from "@/config/resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -45,18 +46,15 @@ export async function contactAction(
   if (!validation.success)
     return { success: false, error: "TURNSTILE_INVALID" };
 
-  const to = process.env.CONTACT_TO_EMAIL;
-  const from = process.env.CONTACT_FROM_EMAIL;
-
-  if (!process.env.RESEND_API_KEY || !to || !from) {
+  if (!process.env.RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL) {
     console.error("Missing ENV configuration");
     return { success: false, error: "SERVER_ERROR" };
   }
 
   try {
     const { error } = await resend.emails.send({
-      from: `Plan był inny <${from}>`,
-      to,
+      from: `Plan był inny <${CONTACT_FROM_EMAIL}>`,
+      to: CONTACT_TO_EMAIL,
       subject: `Kontakt: ${name}`,
       replyTo: email,
       text: `Od: ${name} <${email}>\n\n${content}`,
