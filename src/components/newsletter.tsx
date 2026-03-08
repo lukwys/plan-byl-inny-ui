@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { newsletterAction, NewsletterState } from "@/actions/newsletter-action";
+import { newsletterAction } from "@/actions/newsletter-action";
 import { newsletterSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
 
@@ -51,9 +51,9 @@ export const Newsletter = () => {
             disabled={isPending}
             className="h-12 w-full border border-neutral-200 bg-white px-5 mb-2 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
           />
-          {state.errors?.email && (
+          {state.errors?.fieldErrors.email && (
             <p className="text-red-700 text-xs mb-3 text-left">
-              {state.errors.email}
+              {state.errors.fieldErrors.email}
             </p>
           )}
         </label>

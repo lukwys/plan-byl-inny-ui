@@ -12,8 +12,13 @@ import { Newsletter } from "@/components/newsletter";
 import { AuthorNote } from "@/components/author-note";
 import { strapiService } from "@/services/strapi";
 
-export default async function PostPage({ params }: { params: Params }) {
-  const post = await strapiService.getPostBySlug(params.slug);
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { slug } = await params;
+  const post = await strapiService.getPostBySlug(slug);
   const socialLinks = await strapiService.getSocialLinks();
   const categories = await strapiService.getCategories();
 
@@ -51,7 +56,7 @@ export default async function PostPage({ params }: { params: Params }) {
                               typeof children === "string" &&
                               children.startsWith("::: ")
                             ) {
-                              return <AuthorNote children={children} />;
+                              return <AuthorNote>{children}</AuthorNote>;
                             }
 
                             return (

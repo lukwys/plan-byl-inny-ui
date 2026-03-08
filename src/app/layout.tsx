@@ -4,13 +4,13 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { DM_Sans, EB_Garamond } from "next/font/google";
 
-export const dmSans = DM_Sans({
+const dmSans = DM_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-dm-sans",
   display: "swap",
 });
 
-export const ebGaramond = EB_Garamond({
+const ebGaramond = EB_Garamond({
   subsets: ["latin", "latin-ext"],
   variable: "--font-eb-garamond",
   display: "swap",

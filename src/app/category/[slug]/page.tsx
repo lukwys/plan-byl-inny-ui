@@ -5,13 +5,15 @@ import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
 import { strapiService } from "@/services/strapi";
 import { HomeBaner } from "@/components/home-baner";
+import { Params } from "@/types/post";
 
 export default async function CategoryPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<Params>;
 }) {
-  const posts = await strapiService.getPosts(params.slug);
+  const { slug } = await params;
+  const posts = await strapiService.getPosts(slug);
   const socialLinks = await strapiService.getSocialLinks();
   const categories = await strapiService.getCategories();
 
