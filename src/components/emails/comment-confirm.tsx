@@ -13,15 +13,21 @@ import {
   Hr,
 } from "@react-email/components";
 
-interface NewsletterConfirmProps {
+interface CommentConfirmProps {
+  postTitle: string;
+  commentText: string;
   confirmUrl: string;
 }
 
-export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
+export const CommentConfirm = ({
+  postTitle,
+  commentText,
+  confirmUrl,
+}: CommentConfirmProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Potwierdź swój zapis do newslettera "Plan był inny"</Preview>
+      <Preview>Potwierdź swój komentarz pod wpisem: {postTitle}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
@@ -32,15 +38,22 @@ export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
               style={logo}
             />
           </Section>
-          <Heading style={h1}>Hej! Fajnie, że jesteś</Heading>
+          <Heading style={h1}>Dzięki za Twój głos!</Heading>
           <Text style={text}>
-            Zapisałeś/aś się do newslettera bloga <strong>Plan był inny</strong>
-            . Zanim wyślę Ci pierwsze historie z trasy, muszę mieć pewność, że
-            to Ty. Kliknij poniższy przycisk, aby potwierdzić swój adres e-mail.
+            Otrzymałem Twój komentarz pod wpisem: <br />
+            <strong>"{postTitle}"</strong>
+          </Text>
+          <Section style={commentBox}>
+            <Text style={commentLabel}>Treść komentarza:</Text>
+            <Text style={commentContent}>"{commentText}"</Text>
+          </Section>
+          <Text style={text}>
+            Zanim go opublikuję, muszę potwierdzić, że to Ty. Kliknij przycisk
+            poniżej, aby zatwierdzić publikację na blogu.
           </Text>
           <Section style={btnContainer}>
             <Link style={button} href={confirmUrl}>
-              POTWIERDZAM ZAPIS
+              ZATWIERDŹ KOMENTARZ
             </Link>
             <Text style={expiryWarning}>Link jest ważny przez 30 minut.</Text>
           </Section>
@@ -53,8 +66,9 @@ export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
           </Text>
           <Hr style={hr} />
           <Text style={footer}>
-            Otrzymałeś ten e-mail, ponieważ zapisałeś się na stronie
-            plan-byl-inny.pl. Jeśli to pomyłka, po prostu zignoruj tę wiadomość.
+            Dostałeś ten e-mail, ponieważ Ty (lub ktoś podający się za Ciebie)
+            dodał komentarz na stronie plan-byl-inny.pl. Jeśli to pomyłka, po
+            prostu zignoruj tę wiadomość.
             <br />
             <br />© 2026 Plan był inny
           </Text>
@@ -93,10 +107,36 @@ const h1 = {
 };
 
 const text = {
-  fontSize: "16px",
+  fontSize: "15px",
   lineHeight: "24px",
   color: "#444",
   textAlign: "center" as const,
+};
+
+const commentBox = {
+  backgroundColor: "#f9f9f9",
+  borderRadius: "4px",
+  padding: "20px",
+  margin: "24px 0",
+  border: "1px solid #eeeeee",
+};
+
+const commentLabel = {
+  fontSize: "12px",
+  color: "#888",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.5px",
+  marginBottom: "8px",
+  textAlign: "center" as const,
+};
+
+const commentContent = {
+  fontSize: "16px",
+  fontStyle: "italic",
+  color: "#333",
+  margin: "0",
+  textAlign: "center" as const,
+  lineHeight: "1.5",
 };
 
 const btnContainer = {

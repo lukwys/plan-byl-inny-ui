@@ -7,9 +7,13 @@ import { commentFormSchema } from "@/lib/validation/schemas";
 
 interface CommentFormProps {
   postDocumentId: string;
+  postTitle: string;
 }
 
-export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
+export const CommentForm = ({
+  postDocumentId,
+  postTitle,
+}: CommentFormProps) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -47,7 +51,7 @@ export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
             <input
               type="text"
               name="name"
-              // required
+              required
               placeholder="Imię*"
               disabled={isPending}
               className="h-12 w-full border border-neutral-200 bg-white px-5 text-sm placeholder:italic placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900 disabled:opacity-60"
@@ -99,6 +103,7 @@ export const CommentForm = ({ postDocumentId }: CommentFormProps) => {
           className="hidden"
           aria-hidden="true"
         />
+        <input type="hidden" name="postTitle" value={postTitle} />
         <div className="flex flex-col gap-4 mt-4 items-end">
           <Turnstile
             siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}

@@ -5,9 +5,14 @@ import { CommentForm } from "./comment-form";
 type CommentsProps = {
   comments: PublicCommentModel[];
   postDocumentId: string;
+  postTitle: string;
 };
 
-export const Comments = ({ comments, postDocumentId }: CommentsProps) => {
+export const Comments = ({
+  comments,
+  postDocumentId,
+  postTitle,
+}: CommentsProps) => {
   return (
     <div className="mt-6">
       <h3 className="font-dm-sans font-bold text-xl">Komentarze</h3>
@@ -20,7 +25,7 @@ export const Comments = ({ comments, postDocumentId }: CommentsProps) => {
           Zapraszam do dyskusji 🙂
         </p>
       )}
-      <CommentForm postDocumentId={postDocumentId} />
+      <CommentForm postDocumentId={postDocumentId} postTitle={postTitle} />
     </div>
   );
 };

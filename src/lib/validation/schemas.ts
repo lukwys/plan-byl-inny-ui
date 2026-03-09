@@ -30,6 +30,7 @@ export const commentFormSchema = z.object({
     .min(5, "Komentarz musi mieć co najmniej 5 znaków.")
     .max(5000, "Komentarz może mieć maksymalnie 5000 znaków."),
   hp,
+  postTitle: z.string(),
 });
 
 export const contactFormSchema = z.object({
