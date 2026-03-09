@@ -2,7 +2,6 @@ import { AboutMe } from "@/components/about-me";
 import ReactMarkdown from "react-markdown";
 import Image from "next/image";
 import { Comments } from "@/components/comments/comments";
-import { STRAPI_URL } from "@/config/strapi";
 import { notFound } from "next/navigation";
 import { Params } from "@/types/post";
 import { Gallery } from "@/components/gallery";
@@ -11,6 +10,7 @@ import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
 import { AuthorNote } from "@/components/author-note";
 import { strapiService } from "@/services/strapi";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 
 export default async function PostPage({
   params,
@@ -30,7 +30,7 @@ export default async function PostPage({
     <div>
       <div className="relative w-full h-[600px]">
         <Image
-          src={`${STRAPI_URL}${post.cover_image.url}`}
+          src={getStrapiImage(post.cover_image.url)}
           alt={post.cover_image.alternativeText ?? ""}
           fill
           className="object-cover"

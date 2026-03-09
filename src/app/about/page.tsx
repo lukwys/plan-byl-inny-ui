@@ -1,6 +1,6 @@
 import { SocialLink } from "@/components/social-link";
-import { STRAPI_URL } from "@/config/strapi";
 import { strapiService } from "@/services/strapi";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import Image from "next/image";
 
 const AboutMe = async () => {
@@ -14,7 +14,7 @@ const AboutMe = async () => {
           O mnie
         </h1>
         <Image
-          src={`${STRAPI_URL}${header_image.url}`}
+          src={getStrapiImage(header_image.url)}
           alt={header_image.alternativeText ?? ""}
           className="object-cover"
           priority
@@ -34,7 +34,7 @@ const AboutMe = async () => {
         </div>
         <div className="order-1 relative mx-auto mb-12 aspect-square w-[300px] lg:order-none lg:col-start-8 lg:col-span-3 lg:w-[500px]">
           <Image
-            src={`${STRAPI_URL}${avatar.url}`}
+            src={getStrapiImage(avatar.url)}
             alt={avatar.alternativeText ?? ""}
             fill
             priority

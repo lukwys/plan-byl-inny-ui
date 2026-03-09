@@ -1,5 +1,5 @@
-import { STRAPI_URL } from "@/config/strapi";
 import { GalleryBlock } from "@/types/post";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import Image from "next/image";
 
 type GalleryProps = {
@@ -31,7 +31,7 @@ export const Gallery = ({ block }: GalleryProps) => {
               className="flex justify-center w-full my-4"
             >
               <Image
-                src={`${STRAPI_URL}${img.url}`}
+                src={getStrapiImage(img.url)}
                 alt={img.alternativeText ?? ""}
                 width={img.width}
                 height={img.height}
@@ -52,7 +52,7 @@ export const Gallery = ({ block }: GalleryProps) => {
             ].join(" ")}
           >
             <Image
-              src={`${STRAPI_URL}${img.url}`}
+              src={getStrapiImage(img.url)}
               alt={img.alternativeText ?? ""}
               fill
               sizes={

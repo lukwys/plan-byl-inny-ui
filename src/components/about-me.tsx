@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { STRAPI_URL } from "@/config/strapi";
 import { strapiService } from "@/services/strapi";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 
 export const AboutMe = async () => {
   const { title, bio_short, avatar } = await strapiService.getAboutMe();
@@ -10,7 +10,7 @@ export const AboutMe = async () => {
     <div className="flex flex-col items-center text-center">
       <div className="relative w-[150px] h-[150px] mb-12 overflow-hidden rounded-full">
         <Image
-          src={`${STRAPI_URL}${avatar.url}`}
+          src={getStrapiImage(avatar.url)}
           alt={avatar.alternativeText ?? ""}
           fill
           className="object-cover object-center"
