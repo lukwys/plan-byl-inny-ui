@@ -126,7 +126,7 @@ export const strapiService = {
             fields: ["url", "alternativeText"],
           },
         },
-        fields: ["title", "bio"],
+        fields: ["title", "bio", "bio_short"],
       },
       { encodeValuesOnly: true },
     );
