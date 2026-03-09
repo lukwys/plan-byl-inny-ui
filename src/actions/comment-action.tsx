@@ -12,6 +12,7 @@ import { createToken, sha256 } from "@/lib/security/tokens";
 import { CONTACT_FROM_EMAIL, RESEND_API_KEY } from "@/config/resend";
 import { STRAPI_API_TOKEN, STRAPI_URL } from "@/config/strapi";
 import { SITE_URL } from "@/config/next";
+import { CommentConfirm } from "@/components/emails/comment-confirm";
 
 const resend = new Resend(RESEND_API_KEY);
 
@@ -37,7 +38,8 @@ export async function commentAction(
     };
   }
 
-  const { postDocumentId, name, email, comment, hp } = validatedFields.data;
+  const { postDocumentId, name, email, comment, hp, postTitle } =
+    validatedFields.data;
 
   if (hp) return { success: true, message: "Dziękujemy za komentarz!" };
 
@@ -106,7 +108,13 @@ export async function commentAction(
       from: `Plan był inny <${CONTACT_FROM_EMAIL}>`,
       to: email,
       subject: "Potwierdź swój komentarz",
-      text: `Cześć ${name}!\n\nKliknij w link, aby zatwierdzić komentarz:\n${verifyUrl}\n\nLink wygaśnie za 30 minut.`,
+      react: (
+        <CommentConfirm
+          postTitle={postTitle}
+          commentText={comment}
+          confirmUrl={verifyUrl}
+        />
+      ),
     });
 
     if (mailError) throw new Error("EMAIL_SEND_FAILED");

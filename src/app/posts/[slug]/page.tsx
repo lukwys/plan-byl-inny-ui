@@ -90,7 +90,11 @@ export default async function PostPage({
               }
             })}
           </article>
-          <Comments postDocumentId={post.documentId} comments={comments} />
+          <Comments
+            postDocumentId={post.documentId}
+            comments={comments}
+            postTitle={post.title}
+          />
         </div>
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
         <div className="lg:col-start-10 lg:col-span-3 flex flex-col gap-20">
