@@ -12,6 +12,7 @@ import { createToken, sha256 } from "@/lib/security/tokens";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
 import { COMMENTS_FROM_EMAIL, RESEND_API_KEY } from "@/config/resend";
 import { SITE_URL } from "@/config/next";
+import { NewsletterConfirm } from "@/components/emails/newsletter-confirm";
 
 const resend = new Resend(RESEND_API_KEY);
 
@@ -88,7 +89,7 @@ export async function newsletterAction(
       from: `Plan był inny <${COMMENTS_FROM_EMAIL}>`,
       to: email,
       subject: "Potwierdź swój zapis do newslettera",
-      text: `Cześć!\n\nDziękuję za chęć dołączenia do newslettera. Kliknij w poniższy link, aby potwierdzić swój adres e-mail:\n\n${confirmUrl}\n\nLink jest ważny przez 24 godziny.\n\nJeśli to nie Ty, zignoruj tę wiadomość.\n`,
+      react: <NewsletterConfirm confirmUrl={confirmUrl} />,
     });
 
     if (mailError) throw new Error(mailError.message);
