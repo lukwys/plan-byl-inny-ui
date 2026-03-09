@@ -17,7 +17,9 @@ export default async function Home() {
       <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12">
         <div className="lg:col-start-2 lg:col-span-6">
           <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">
-            Odkryj najnowsze wpisy
+            {posts.length === 0
+              ? "Pierwsze wpisy pojawią się już niebawem! "
+              : "Odkryj najnowsze wpisy"}
           </h1>
           <div className="flex flex-col gap-10">
             {posts.map((post) => (
@@ -35,16 +37,18 @@ export default async function Home() {
               ))}
             </div>
           </div>
-          <div>
-            <h3 className="font-dm-sans font-semibold text-center text-xl mb-4">
-              Kategorie
-            </h3>
-            <div className="flex flex-col gap-6">
-              {categories.map((category) => (
-                <Category key={category.documentId} category={category} />
-              ))}
+          {categories.length > 0 && (
+            <div>
+              <h3 className="font-dm-sans font-semibold text-center text-xl mb-4">
+                Kategorie
+              </h3>
+              <div className="flex flex-col gap-6">
+                {categories.map((category) => (
+                  <Category key={category.documentId} category={category} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <Newsletter />
         </div>
       </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { STRAPI_URL } from "@/config/strapi";
 import { CategoryModel } from "@/types/category";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 
 type CategoryProps = {
   category: CategoryModel;
@@ -19,7 +19,7 @@ export const Category = ({ category }: CategoryProps) => {
       <div className="absolute inset-0">
         {image?.url ? (
           <Image
-            src={`${STRAPI_URL}${image.url}`}
+            src={getStrapiImage(image.url)}
             alt={image.alternativeText ?? ""}
             fill
             className="object-cover opacity-70 transition-opacity duration-300 group-hover:opacity-90"

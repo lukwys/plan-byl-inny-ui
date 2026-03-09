@@ -1,8 +1,8 @@
 import { PostModel } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
-import { STRAPI_URL } from "@/config/strapi";
 import { formatDate } from "@/lib/dates/format-date";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 
 type BlogPostProps = {
   post: PostModel;
@@ -15,7 +15,7 @@ export const BlogPost = ({ post }: BlogPostProps) => {
     <div>
       <div className="relative h-[350px] w-full">
         <Image
-          src={`${STRAPI_URL}${cover_image.url}`}
+          src={getStrapiImage(cover_image.url)}
           alt={cover_image.alternativeText ?? ""}
           fill
           className="object-cover"
