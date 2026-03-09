@@ -4,7 +4,7 @@ import { STRAPI_URL } from "@/config/strapi";
 import { strapiService } from "@/services/strapi";
 
 export const AboutMe = async () => {
-  const { title, bio, avatar } = await strapiService.getAboutMe();
+  const { title, bio_short, avatar } = await strapiService.getAboutMe();
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -19,7 +19,7 @@ export const AboutMe = async () => {
         />
       </div>
       <h3 className="font-dm-sans text-xl font-semibold mb-2.5">{title}</h3>
-      <p className="font-eb-garamond mb-2.5">{bio}</p>
+      <p className="font-eb-garamond mb-2.5">{bio_short}</p>
       <Link
         href="/about"
         className="font-eb-garamond text-main-red font-medium hover:text-main-red-hover"
