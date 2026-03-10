@@ -90,7 +90,7 @@ export const ContactForm = () => {
           </p>
         )}
       </label>
-      <div className="flex flex-col gap-4 mt-4 items-end">
+      <div className="flex flex-col gap-4 mt-4 items-center">
         <Turnstile
           siteKey={TURNSTILE_SITE_KEY ?? ""}
           onSuccess={setToken}
