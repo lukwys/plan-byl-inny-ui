@@ -8,8 +8,8 @@ import { HamburgerButton } from "./hamburger-button";
 
 const navLinks = [
   { href: "/", label: "Strona Główna" },
-  { href: "/about", label: "O mnie" },
-  { href: "/contact", label: "Kontakt" },
+  { href: "/o-mnie", label: "O mnie" },
+  { href: "/kontakt", label: "Kontakt" },
 ];
 
 export const Header = () => {
