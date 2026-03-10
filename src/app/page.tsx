@@ -5,6 +5,7 @@ import { Category } from "@/components/category";
 import { Newsletter } from "@/components/newsletter";
 import { strapiService } from "@/services/strapi";
 import { HomeBaner } from "@/components/home-baner";
+import { Divider } from "@/components/divider";
 
 export default async function Home() {
   const posts = await strapiService.getPosts();
@@ -28,7 +29,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-        <div className="lg:col-start-9 lg:col-span-3 flex flex-col gap-20">
+        <div className="lg:col-start-9 lg:col-span-3 flex flex-col">
           <div>
             <AboutMe />
             <div className="flex gap-3 justify-center mt-3">
@@ -37,6 +38,7 @@ export default async function Home() {
               ))}
             </div>
           </div>
+          <Divider />
           {categories.length > 0 && (
             <div>
               <h3 className="font-dm-sans font-semibold text-center text-xl mb-4">
@@ -49,6 +51,7 @@ export default async function Home() {
               </div>
             </div>
           )}
+          <Divider />
           <Newsletter />
         </div>
       </div>

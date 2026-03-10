@@ -2,15 +2,26 @@ import { SocialLink } from "@/components/social-link";
 import { strapiService } from "@/services/strapi";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
+import { Gallery } from "@/components/gallery";
+import { Divider } from "@/components/divider";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "O mnie | Plan był inny",
+  description:
+    "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Bikepacking, nurkowanie i projekty DIY.",
+};
 const AboutMe = async () => {
-  const { header_image, title, bio, avatar } = await strapiService.getAboutMe();
+  const { header_image, title, content_blocks, avatar } =
+    await strapiService.getAboutMe(true);
   const socialLinks = await strapiService.getSocialLinks();
 
   return (
-    <div>
-      <div className="relative w-full h-[350px]">
-        <h1 className="absolute inset-0 z-10 flex items-center justify-center text-white font-dm-sans font-semibold text-6xl text-center">
+    <div className="pb-20">
+      <div className="relative w-full h-[350px] md:h-[450px]">
+        <div className="absolute inset-0 bg-black/20 z-[5]" />
+        <h1 className="absolute inset-0 z-10 flex items-center justify-center text-white font-dm-sans font-semibold text-5xl md:text-6xl text-center">
           O mnie
         </h1>
         <Image
@@ -22,25 +33,69 @@ const AboutMe = async () => {
           fill
         />
       </div>
-      <div className="grid gap-10 py-10 max-w-7xl mx-auto lg:grid-cols-12">
-        <div className="order-2 px-4 lg:px-0 lg:order-none lg:col-start-2 lg:col-span-5">
-          <p className="font-dm-sans font-semibold mb-2.5">{title}</p>
-          <p className="font-eb-garamond mb-2.5">{bio}</p>
-          <div className="flex gap-3 mt-3">
-            {socialLinks.map((link) => (
-              <SocialLink key={link.documentId} socialLink={link} />
-            ))}
-          </div>
+      <div className="grid gap-10 py-16 max-w-7xl mx-auto lg:grid-cols-12 px-4 lg:px-6">
+        <div className="lg:col-span-8">
+          <h2 className="font-dm-sans font-bold text-2xl mb-4 text-main-red uppercase tracking-wider">
+            {title}
+          </h2>
+          <article className="markdown prose prose-lg max-w-none font-eb-garamond">
+            {content_blocks?.map((block) => {
+              switch (block.__component) {
+                case "content.paragraph-md":
+                  return (
+                    <div key={block.id}>
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => (
+                            <p className="font-eb-garamond text-lg text-justify mb-4 last:mb-0">
+                              {children}
+                            </p>
+                          ),
+                          li: ({ children }) => (
+                            <li className="font-eb-garamond text-lg text-justify mb-4 last:mb-0">
+                              {children}
+                            </li>
+                          ),
+                        }}
+                      >
+                        {block.paragraph}
+                      </ReactMarkdown>
+                    </div>
+                  );
+                case "content.gallery":
+                  return (
+                    <div key={block.id} className="my-10">
+                      <Gallery block={block} />
+                    </div>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </article>
         </div>
-        <div className="order-1 relative mx-auto mb-12 aspect-square w-[300px] lg:order-none lg:col-start-8 lg:col-span-3 lg:w-[500px]">
-          <Image
-            src={getStrapiImage(avatar.url)}
-            alt={avatar.alternativeText ?? ""}
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="(min-width: 1024px) 500px, 300px"
-          />
+        <div className="lg:col-start-10 lg:col-span-3">
+          <div className="sticky top-10 flex flex-col items-center">
+            <div className="relative aspect-square w-full max-w-[280px] lg:max-w-none shadow-2xl rounded-full overflow-hidden border-8 border-white bg-white">
+              <Image
+                src={getStrapiImage(avatar.url)}
+                alt={avatar.alternativeText ?? ""}
+                fill
+                priority
+                className="object-cover object-center"
+                sizes="(min-width: 1024px) 350px, 280px"
+              />
+            </div>
+            <Divider />
+            <p className="font-dm-sans text-xs uppercase tracking-widest text-gray-400 mb-4 text-center lg:text-left">
+              Znajdziesz mnie tutaj:
+            </p>
+            <div className="flex gap-4">
+              {socialLinks.map((link) => (
+                <SocialLink key={link.documentId} socialLink={link} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

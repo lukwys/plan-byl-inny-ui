@@ -1,4 +1,4 @@
-import { GalleryBlock } from "@/types/post";
+import { GalleryBlock } from "@/types/content-block";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import Image from "next/image";
 
