@@ -33,7 +33,7 @@ export const Newsletter = () => {
   const isButtonDisabled = isPending || !isFormValid || !token;
 
   return (
-    <div className="text-center">
+    <div className="text-center px-2">
       <h3 className="font-dm-sans font-semibold text-xl mb-4">
         Gdzie jesteśmy?
       </h3>
@@ -66,11 +66,13 @@ export const Newsletter = () => {
           className="hidden"
           aria-hidden="true"
         />
-        <Turnstile
-          siteKey={TURNSTILE_SITE_KEY ?? ""}
-          onSuccess={setToken}
-          options={{ theme: "light" }}
-        />
+        <div className="flex justify-center">
+          <Turnstile
+            siteKey={TURNSTILE_SITE_KEY ?? ""}
+            onSuccess={setToken}
+            options={{ theme: "light", size: "flexible" }}
+          />
+        </div>
         <div className="mt-6 flex justify-center">
           <button
             type="submit"
