@@ -12,7 +12,7 @@ export const Category = ({ category }: CategoryProps) => {
 
   return (
     <Link
-      href={`/category/${slug}`}
+      href={`/kategoria/${slug}`}
       className="group relative block w-full overflow-hidden py-10"
       aria-label={`Kategoria: ${name}`}
     >

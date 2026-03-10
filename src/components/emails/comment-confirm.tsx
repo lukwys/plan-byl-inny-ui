@@ -24,6 +24,8 @@ export const CommentConfirm = ({
   commentText,
   confirmUrl,
 }: CommentConfirmProps) => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <Html>
       <Head />
@@ -70,13 +72,22 @@ export const CommentConfirm = ({
             dodał komentarz na stronie plan-byl-inny.pl. Jeśli to pomyłka, po
             prostu zignoruj tę wiadomość.
             <br />
-            <br />© 2026 Plan był inny
+            <br />
+            Zapoznaj się z naszą{" "}
+            <Link href={`${SITE_URL}/polityka-prywatnosci`} style={link}>
+              Polityką prywatności
+            </Link>
+            .
+            <br />
+            <br />© {currentYear} Plan był inny
           </Text>
         </Container>
       </Body>
     </Html>
   );
 };
+
+export default CommentConfirm;
 
 const main = {
   backgroundColor: "#ffffff",

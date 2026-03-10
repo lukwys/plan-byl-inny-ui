@@ -28,7 +28,7 @@ export const BlogPost = ({ post }: BlogPostProps) => {
           <h3 className="font-dm-sans text-2xl font-semibold">{title}</h3>
           <div className="flex justify-center text-xs">
             <Link
-              href={`/category/${post.category?.slug}`}
+              href={`/kategoria/${post.category?.slug}`}
               className="text-main-red hover:text-main-red-hover"
             >
               <p>{category?.name.toUpperCase()}</p>
@@ -38,7 +38,7 @@ export const BlogPost = ({ post }: BlogPostProps) => {
           </div>
           <p className="font-eb-garamond text-lg">{preview}</p>
           <Link
-            href={`/posts/${slug}`}
+            href={`/wpis/${slug}`}
             className="font-eb-garamond text-main-red hover:text-main-red-hover"
           >
             czytaj →

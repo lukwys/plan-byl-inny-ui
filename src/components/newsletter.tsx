@@ -5,6 +5,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { newsletterAction } from "@/actions/newsletter-action";
 import { newsletterSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
+import Link from "next/link";
 
 export const Newsletter = () => {
   const [token, setToken] = useState("");
@@ -79,6 +80,16 @@ export const Newsletter = () => {
             {isPending ? "Zapisywanie..." : "Wchodzę w to!"}
           </button>
         </div>
+        <p className="mt-4 text-xs text-gray-500 font-light">
+          Zapisując się do newslettera, akceptujesz naszą{" "}
+          <Link
+            href="/polityka-prywatnosci"
+            className="underline hover:text-main-red transition-colors"
+          >
+            Politykę prywatności
+          </Link>
+          . Twoje dane są u nas bezpieczne.
+        </p>
         <div className="mt-3 min-h-[20px]">
           {(state.message || state.error) && (
             <p
