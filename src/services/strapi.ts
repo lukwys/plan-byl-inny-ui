@@ -115,7 +115,7 @@ export const strapiService = {
       { revalidate: 300 },
     );
   },
-  async getAboutMe(): Promise<AboutMeModel> {
+  async getAboutMe(includeBlocks: boolean = false): Promise<AboutMeModel> {
     const query = qs.stringify(
       {
         populate: {
@@ -125,8 +125,22 @@ export const strapiService = {
           header_image: {
             fields: ["url", "alternativeText"],
           },
+          ...(includeBlocks && {
+            content_blocks: {
+              on: {
+                "content.gallery": {
+                  populate: {
+                    image_gallery: {
+                      fields: ["url", "alternativeText"],
+                    },
+                  },
+                },
+                "content.paragraph-md": true,
+              },
+            },
+          }),
         },
-        fields: ["title", "bio", "bio_short"],
+        fields: ["title", "bio"],
       },
       { encodeValuesOnly: true },
     );
