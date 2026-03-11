@@ -18,8 +18,8 @@ export const Header = () => {
 
   return (
     <header className="relative z-50 bg-white">
-      <div className="flex items-center justify-between px-4 py-2 lg:grid lg:grid-cols-12 lg:px-0 lg:py-5">
-        <div className="lg:col-start-2 lg:col-span-2">
+      <div className="container mx-auto flex items-center justify-between gap-10 px-4 py-2 lg:grid lg:grid-cols-24 lg:px-0 lg:py-5">
+        <div className="lg:col-span-4 lg:col-start-2">
           <Link href="/" className="block" aria-label="Go to homepage">
             <Image
               src="/logo.png"
@@ -31,7 +31,7 @@ export const Header = () => {
             />
           </Link>
         </div>
-        <nav className="hidden lg:flex lg:col-start-9 lg:col-span-3 justify-end gap-6">
+        <nav className="hidden lg:flex lg:col-start-18 lg:col-span-6 justify-end gap-6">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}

@@ -10,7 +10,7 @@ const currentYear = new Date().getFullYear();
 
 const PrivacyPolicyPage = () => {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16 sm:py-24">
+    <main className="max-w-6xl mx-auto px-10 py-16 sm:py-24 bg-white">
       <header className="mb-12 border-b border-gray-100 pb-8">
         <h1 className="font-dm-sans text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
           Polityka Prywatności

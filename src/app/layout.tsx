@@ -36,9 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl" className={`${dmSans.variable} ${ebGaramond.variable}`}>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col lg:bg-[url('/background.png')] lg:bg-repeat lg:bg-[length:10%_auto]">
         <Header />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 flex flex-col">{children}</div>
         <Footer />
         <Analytics />
       </body>

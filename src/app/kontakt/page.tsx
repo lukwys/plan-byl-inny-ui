@@ -6,7 +6,7 @@ const ContactPage = async () => {
   const socialLinks = await strapiService.getSocialLinks();
 
   return (
-    <div className="container mx-auto w-full px-4 py-10 sm:py-14">
+    <div className="container mx-auto w-full px-4 py-10 sm:py-14 flex-1 bg-white">
       <div className="p-8 sm:p-12">
         <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:gap-16">
           <section className="order-1">
