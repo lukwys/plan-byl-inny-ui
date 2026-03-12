@@ -75,7 +75,11 @@ export async function commentAction(
       }),
     });
 
-    if (!commentRes.ok) throw new Error("STRAPI_COMMENT_FAILED");
+    if (!commentRes.ok) {
+      const strapiError = await commentRes.json().catch(() => ({}));
+      console.error("FULL_STRAPI_ERROR:", JSON.stringify(strapiError, null, 2));
+      throw new Error(`STRAPI_COMMENT_FAILED: ${commentRes.status}`);
+    }
 
     const commentJson = await commentRes.json();
     const commentDocId = commentJson.data.documentId;
