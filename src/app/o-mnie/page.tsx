@@ -18,7 +18,7 @@ const AboutMe = async () => {
   const socialLinks = await strapiService.getSocialLinks();
 
   return (
-    <div className="pb-20">
+    <div>
       <div className="relative w-full h-[350px] md:h-[450px]">
         <div className="absolute inset-0 bg-black/20 z-[5]" />
         <h1 className="absolute inset-0 z-10 flex items-center justify-center text-white font-dm-sans font-semibold text-5xl md:text-6xl text-center">
@@ -33,8 +33,8 @@ const AboutMe = async () => {
           fill
         />
       </div>
-      <div className="grid gap-10 py-16 max-w-7xl mx-auto lg:grid-cols-12 px-4 lg:px-6">
-        <div className="lg:col-span-8">
+      <div className="grid gap-10 py-16 max-w-7xl mx-auto lg:grid-cols-24 px-4 lg:px-6 bg-white">
+        <div className="lg:col-span-15 lg:col-start-2">
           <h2 className="font-dm-sans font-bold text-2xl mb-4 text-main-red uppercase tracking-wider">
             {title}
           </h2>
@@ -74,7 +74,7 @@ const AboutMe = async () => {
             })}
           </article>
         </div>
-        <div className="lg:col-start-10 lg:col-span-3">
+        <div className="lg:col-start-18 lg:col-span-6">
           <div className="sticky top-10 flex flex-col items-center">
             <div className="relative aspect-square w-full max-w-[280px] lg:max-w-none shadow-2xl rounded-full overflow-hidden border-8 border-white bg-white">
               <Image

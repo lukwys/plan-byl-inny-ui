@@ -27,22 +27,24 @@ export default async function PostPage({
   const comments = await strapiService.getPublishedComments(post.documentId);
 
   return (
-    <div>
-      <div className="relative w-full h-[600px]">
+    <div className="mx-auto container bg-white">
+      <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-2xl">
         <Image
           src={getStrapiImage(post.cover_image.url)}
           alt={post.cover_image.alternativeText ?? ""}
           fill
           className="object-cover"
           priority
-          sizes="100vw"
+          sizes="(min-width: 1280px) 1280px, 100vw"
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h1 className="text-white text-4xl font-bold">{post.title}</h1>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold text-center px-6">
+            {post.title}
+          </h1>
         </div>
       </div>
-      <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12  px-4 lg:px-0">
-        <div className="lg:col-span-8">
+      <div className="py-10 grid gap-10 lg:grid-cols-24  px-4 lg:px-0">
+        <div className="lg:col-span-15 lg:col-start-2">
           <article className="markdown">
             {post.content_blocks.map((block) => {
               switch (block.__component) {
@@ -97,7 +99,7 @@ export default async function PostPage({
           />
         </div>
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-        <div className="lg:col-start-10 lg:col-span-3 flex flex-col gap-20">
+        <div className="lg:col-start-18 lg:col-span-6 flex flex-col gap-20">
           <div>
             <AboutMe />
             <div className="flex gap-3 justify-center mt-3">

@@ -15,8 +15,8 @@ export default async function Home() {
   return (
     <div>
       <HomeBaner />
-      <div className="container mx-auto py-10 grid gap-10 lg:grid-cols-12">
-        <div className="lg:col-start-2 lg:col-span-6">
+      <div className="container mx-auto bg-white py-10 grid gap-10 lg:grid-cols-24">
+        <div className="lg:col-start-2 lg:col-span-15">
           <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">
             {posts.length === 0
               ? "Pierwsze wpisy pojawią się już niebawem! "
@@ -29,7 +29,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-        <div className="lg:col-start-9 lg:col-span-3 flex flex-col">
+        <div className="lg:col-start-18 lg:col-span-6 flex flex-col">
           <div>
             <AboutMe />
             <div className="flex gap-3 justify-center mt-3">
