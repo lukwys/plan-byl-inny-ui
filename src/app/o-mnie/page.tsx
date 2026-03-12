@@ -10,7 +10,7 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "O mnie | Plan był inny",
   description:
-    "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Bikepacking, nurkowanie i projekty DIY.",
+    "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Podróże, bikepacking, nurkowanie i projekty DIY.",
 };
 const AboutMe = async () => {
   const { header_image, title, content_blocks, avatar } =
@@ -21,9 +21,6 @@ const AboutMe = async () => {
     <div>
       <div className="relative w-full h-[350px] md:h-[450px]">
         <div className="absolute inset-0 bg-black/20 z-[5]" />
-        <h1 className="absolute inset-0 z-10 flex items-center justify-center text-white font-dm-sans font-semibold text-5xl md:text-6xl text-center">
-          O mnie
-        </h1>
         <Image
           src={getStrapiImage(header_image.url)}
           alt={header_image.alternativeText ?? ""}
@@ -35,9 +32,9 @@ const AboutMe = async () => {
       </div>
       <div className="grid gap-10 py-16 max-w-7xl mx-auto lg:grid-cols-24 px-4 lg:px-6 bg-white">
         <div className="lg:col-span-15 lg:col-start-2">
-          <h2 className="font-dm-sans font-bold text-2xl mb-4 text-main-red uppercase tracking-wider">
+          <h1 className="font-dm-sans font-bold text-2xl mb-4 text-main-red uppercase tracking-wider">
             {title}
-          </h2>
+          </h1>
           <article className="markdown prose prose-lg max-w-none font-eb-garamond">
             {content_blocks?.map((block) => {
               switch (block.__component) {
