@@ -2,6 +2,17 @@ import { ContactForm } from "@/components/contact-form";
 import { SocialLink } from "@/components/social-link";
 import { strapiService } from "@/services/strapi";
 
+export const metadata = {
+  title: "Kontakt | Plan był inny",
+  description:
+    "Jeśli masz pytanie, chcesz coś skomentować albo po prostu się odezwać — śmiało. Odpowiadam, gdy tylko złapię chwilę lub znajdź mnie w mediach społecznościowych.",
+  openGraph: {
+    title: "Skontaktuj się ze mną - Plan był inny",
+    description:
+      "Napisz, zanim plan znowu się zmieni. Formularz kontaktowy i social media.",
+  },
+};
+
 const ContactPage = async () => {
   const socialLinks = await strapiService.getSocialLinks();
 
