@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/dates/format-date";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
+import { PostInfo } from "./post-info";
 
 type BlogPostProps = {
   post: PostModel;
@@ -22,20 +23,10 @@ export const BlogPost = ({ post }: BlogPostProps) => {
           sizes="(max-width: 768px) 100vw, 950px"
         />
       </div>
-
       <div className="bg-gray-50">
         <div className="w-3/4 mx-auto py-10 flex flex-col gap-2.5 text-center">
           <h3 className="font-dm-sans text-2xl font-semibold">{title}</h3>
-          <div className="flex justify-center text-xs">
-            <Link
-              href={`/kategoria/${post.category?.slug}`}
-              className="text-main-red hover:text-main-red-hover"
-            >
-              <p>{category?.name.toUpperCase()}</p>
-            </Link>
-            <p> • </p>
-            <p>{formatDate(date)}</p>
-          </div>
+          <PostInfo category={category} date={date} />
           <p className="font-eb-garamond text-lg">{preview}</p>
           <Link
             href={`/wpis/${slug}`}

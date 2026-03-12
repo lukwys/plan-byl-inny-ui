@@ -7,6 +7,8 @@ export type PostPageModel = {
   title: string;
   cover_image: StrapiImage;
   content_blocks: ContentBlock[];
+  category?: CategoryModel;
+  date: string;
 };
 
 export type Params = { slug: string };

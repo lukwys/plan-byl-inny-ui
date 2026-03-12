@@ -65,6 +65,7 @@ export const strapiService = {
         },
         populate: {
           cover_image: true,
+          category: true,
           content_blocks: {
             on: {
               "content.gallery": {

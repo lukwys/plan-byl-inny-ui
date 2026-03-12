@@ -8,6 +8,7 @@ import { AuthorNote } from "@/components/author-note";
 import { strapiService } from "@/services/strapi";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { Sidebar } from "@/components/sidebar";
+import { PostInfo } from "@/components/post-info";
 
 export default async function PostPage({
   params,
@@ -32,10 +33,13 @@ export default async function PostPage({
           priority
           sizes="(min-width: 1280px) 1280px, 100vw"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/30">
           <h1 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold text-center px-6">
             {post.title}
           </h1>
+          <div className="bg-white p-2 mt-2">
+            <PostInfo category={post.category} date={post.date} />
+          </div>
         </div>
       </div>
       <div className="py-10 grid gap-10 lg:grid-cols-24  px-4 lg:px-0">
