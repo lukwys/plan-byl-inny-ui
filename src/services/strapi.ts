@@ -4,7 +4,7 @@ import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
 import { HomePageModel } from "@/types/home";
-import { PostModel, PostPageModel } from "@/types/post";
+import { PostModel } from "@/types/post";
 import { SocialLinkModel } from "@/types/social-link";
 import qs from "qs";
 
@@ -57,7 +57,7 @@ export const strapiService = {
       `${STRAPI_URL}/api/categories?${query}`,
     );
   },
-  async getPostBySlug(slug: string): Promise<PostPageModel | null> {
+  async getPostBySlug(slug: string): Promise<PostModel | null> {
     const query = qs.stringify(
       {
         filters: {
@@ -79,7 +79,7 @@ export const strapiService = {
       { encodeValuesOnly: true },
     );
 
-    const posts = await requestData<PostPageModel[]>(
+    const posts = await requestData<PostModel[]>(
       `${STRAPI_URL}/api/posts?${query}`,
       { revalidate: 3600 },
     );
@@ -149,5 +149,21 @@ export const strapiService = {
     return requestData<AboutMeModel>(`${STRAPI_URL}/api/about-me?${query}`, {
       revalidate: 86400,
     });
+  },
+  async getCategoryBySlug(slug: string): Promise<CategoryModel | null> {
+    const query = qs.stringify(
+      {
+        filters: {
+          slug: { $eq: slug },
+        },
+        fields: ["name", "slug"],
+      },
+      { encodeValuesOnly: true },
+    );
+
+    const categories = await requestData<CategoryModel[]>(
+      `${STRAPI_URL}/api/categories?${query}`,
+    );
+    return categories[0] ?? null;
   },
 };

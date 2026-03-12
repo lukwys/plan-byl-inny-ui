@@ -8,15 +8,16 @@ type SocialLinkProps = {
 };
 
 export const SocialLink = ({ socialLink }: SocialLinkProps) => {
-  const { documentId, url, icon } = socialLink;
+  const { documentId, url, icon, name } = socialLink;
 
   return (
     <Link
       key={documentId}
       href={url}
       target="_blank"
-      rel="noopener noreferrer"
+      rel="noopener noreferrer me"
       className="group inline-flex"
+      aria-label={`Odwiedź mój profil w serwisie ${name || "Social Media"}`}
     >
       <span
         aria-hidden="true"
