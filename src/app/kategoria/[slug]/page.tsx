@@ -71,7 +71,10 @@ export default async function CategoryPage({
           </div>
         </div>
         <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-        <Sidebar />
+        <aside className="lg:col-start-18 lg:col-span-6">
+          <div className="block lg:hidden h-px bg-neutral-200 my-4" />
+          <Sidebar />
+        </aside>
       </div>
     </div>
   );

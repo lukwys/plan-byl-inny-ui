@@ -14,17 +14,3 @@ export type PostModel = {
 };
 
 export type Params = { slug: string };
-
-// export type PostModel = {
-//   documentId: string;
-//   date: string;
-//   title: string;
-//   content: string;
-//   createdAt: string;
-//   updatedAt: string;
-//   publishedAt: string;
-//   cover_image: StrapiImage;
-//   preview: string;
-//   slug: string;
-//   category?: CategoryModel;
-};
