@@ -150,4 +150,20 @@ export const strapiService = {
       revalidate: 86400,
     });
   },
+  async getCategoryBySlug(slug: string): Promise<CategoryModel | null> {
+    const query = qs.stringify(
+      {
+        filters: {
+          slug: { $eq: slug },
+        },
+        fields: ["name", "slug"],
+      },
+      { encodeValuesOnly: true },
+    );
+
+    const categories = await requestData<CategoryModel[]>(
+      `${STRAPI_URL}/api/categories?${query}`,
+    );
+    return categories[0] ?? null;
+  },
 };
