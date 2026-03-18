@@ -10,7 +10,12 @@ import {
 import { validateTurnstile } from "@/lib/validation/validate-turnstile";
 import { createToken, sha256 } from "@/lib/security/tokens";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
-import { COMMENTS_FROM_EMAIL, RESEND_API_KEY } from "@/config/resend";
+import {
+  COMMENTS_FROM_EMAIL,
+  RESEND_API_KEY,
+  RESEND_AUDIENCE_ID,
+  RESEND_CONTACTS_API_KEY,
+} from "@/config/resend";
 import { SITE_URL } from "@/config/next";
 import { NewsletterConfirm } from "@/components/emails/newsletter-confirm";
 
@@ -55,6 +60,18 @@ export async function newsletterAction(
   }
 
   try {
+    const contactsResend = new Resend(RESEND_CONTACTS_API_KEY);
+    const { data: existingContact } = await contactsResend.contacts.get({
+      email,
+      audienceId: RESEND_AUDIENCE_ID!,
+    });
+
+    if (existingContact) {
+      return {
+        success: true,
+        message: "Plan był inny, ale Ty już z nami jesteś!",
+      };
+    }
     const token = createToken();
     const tokenHash = sha256(token);
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
