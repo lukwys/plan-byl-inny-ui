@@ -10,6 +10,7 @@ import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { Sidebar } from "@/components/sidebar";
 import { PostInfo } from "@/components/post-info";
 import { Metadata } from "next";
+import { SITE_URL } from "@/config/next";
 
 export async function generateMetadata({
   params,
@@ -65,7 +66,7 @@ export default async function PostPage({
     author: {
       "@type": "Person",
       name: "Łukasz",
-      url: "https://planbylinny.pl/o-mnie",
+      url: `${SITE_URL}/o-mnie`,
     },
   };
 
