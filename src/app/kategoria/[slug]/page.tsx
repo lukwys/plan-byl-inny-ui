@@ -4,6 +4,7 @@ import { HomeBaner } from "@/components/home-baner";
 import { Params } from "@/types/post";
 import { Sidebar } from "@/components/sidebar";
 import { Metadata } from "next";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 
 export async function generateMetadata({
   params,
@@ -14,7 +15,7 @@ export async function generateMetadata({
   const category = await strapiService.getCategoryBySlug(slug);
 
   const title = category ? category.name : slug;
-  const imageUrl = category?.image?.url || "";
+  const imageUrl = getStrapiImage(category?.image?.url ?? null);
 
   return {
     title: `${title} | Plan był inny`,
@@ -31,6 +32,12 @@ export async function generateMetadata({
         },
       ],
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} - Blog Plan był inny`,
+      description: `Sprawdź nasze wpisy w kategorii: ${title}`,
+      images: [imageUrl],
     },
   };
 }

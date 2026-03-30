@@ -2,8 +2,9 @@ import { ContactForm } from "@/components/contact-form";
 import { SocialLink } from "@/components/social-link";
 import { strapiService } from "@/services/strapi";
 import { Metadata } from "next";
+import { SITE_URL } from "@/config/next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Kontakt | Plan był inny",
   description:
     "Jeśli masz pytanie, chcesz coś skomentować albo po prostu się odezwać — śmiało. Odpowiadam, gdy tylko złapię chwilę lub znajdź mnie w mediach społecznościowych.",
@@ -11,6 +12,14 @@ export const metadata = {
     title: "Skontaktuj się ze mną - Plan był inny",
     description:
       "Napisz, zanim plan znowu się zmieni. Formularz kontaktowy i social media.",
+    images: [{ url: `${SITE_URL}/logo.png` }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Skontaktuj się ze mną - Plan był inny",
+    description:
+      "Napisz, zanim plan znowu się zmieni. Formularz kontaktowy i social media.",
+    images: [`${SITE_URL}/logo.png`],
   },
 };
 
