@@ -62,8 +62,26 @@ export default async function CategoryPage({
 
   const categoryName = category?.name || slug;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: categoryName,
+    description: `Wpisy z kategorii ${categoryName} na blogu Plan był inny`,
+    url: `${SITE_URL}/kategoria/${slug}`,
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${SITE_URL}/wpis/${post.slug}`,
+      name: post.title,
+    })),
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HomeBaner />
       <div className="container mx-auto bg-white py-10 grid gap-10 lg:grid-cols-24">
         <div className="lg:col-start-2 lg:col-span-15">
