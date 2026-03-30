@@ -12,6 +12,11 @@ import { PostInfo } from "@/components/post-info";
 import { Metadata } from "next";
 import { SITE_URL } from "@/config/next";
 
+export async function generateStaticParams() {
+  const posts = await strapiService.getPosts();
+  return posts.map((post) => ({ slug: post.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {

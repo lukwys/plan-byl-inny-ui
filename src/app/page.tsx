@@ -33,7 +33,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Plan był inny",
-    url: "https://plan-byl-inny.pl",
+    url: SITE_URL,
     description: "Blog o podróżach, rowerze, nurkowaniu i DIY",
     author: {
       "@type": "Person",

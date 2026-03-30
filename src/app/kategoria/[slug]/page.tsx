@@ -5,6 +5,12 @@ import { Params } from "@/types/post";
 import { Sidebar } from "@/components/sidebar";
 import { Metadata } from "next";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
+import { SITE_URL } from "@/config/next";
+
+export async function generateStaticParams() {
+  const categories = await strapiService.getCategories();
+  return categories.map((category) => ({ slug: category.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -15,7 +21,7 @@ export async function generateMetadata({
   const category = await strapiService.getCategoryBySlug(slug);
 
   const title = category ? category.name : slug;
-  const imageUrl = getStrapiImage(category?.image?.url ?? null);
+  const imageUrl = getStrapiImage(category?.image?.url ?? null) || `${SITE_URL}/logo.png`;
 
   return {
     title: `${title} | Plan był inny`,
