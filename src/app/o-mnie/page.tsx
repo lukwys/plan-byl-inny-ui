@@ -6,11 +6,26 @@ import ReactMarkdown from "react-markdown";
 import { Gallery } from "@/components/gallery";
 import { Divider } from "@/components/divider";
 import { Metadata } from "next";
+import { SITE_URL } from "@/config/next";
 
 export const metadata: Metadata = {
   title: "O mnie | Plan był inny",
   description:
     "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Podróże, bikepacking, nurkowanie i projekty DIY.",
+  openGraph: {
+    title: "O mnie | Plan był inny",
+    description:
+      "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Podróże, bikepacking, nurkowanie i projekty DIY.",
+    type: "profile",
+    images: [{ url: `${SITE_URL}/logo.png` }],
+  },
+  twitter: {
+    card: "summary",
+    title: "O mnie | Plan był inny",
+    description:
+      "Cześć, tu Łukasz. Dowiedz się, dlaczego uważam, że najlepsze przygody zaczynają się tam, gdzie kończy się plan. Podróże, bikepacking, nurkowanie i projekty DIY.",
+    images: [`${SITE_URL}/logo.png`],
+  },
 };
 const AboutMe = async () => {
   const { header_image, title, content_blocks, avatar } =

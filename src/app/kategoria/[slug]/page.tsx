@@ -4,6 +4,13 @@ import { HomeBaner } from "@/components/home-baner";
 import { Params } from "@/types/post";
 import { Sidebar } from "@/components/sidebar";
 import { Metadata } from "next";
+import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
+import { SITE_URL } from "@/config/next";
+
+export async function generateStaticParams() {
+  const categories = await strapiService.getCategories();
+  return categories.map((category) => ({ slug: category.slug }));
+}
 
 export async function generateMetadata({
   params,
@@ -14,7 +21,7 @@ export async function generateMetadata({
   const category = await strapiService.getCategoryBySlug(slug);
 
   const title = category ? category.name : slug;
-  const imageUrl = category?.image?.url || "";
+  const imageUrl = getStrapiImage(category?.image?.url ?? null) || `${SITE_URL}/logo.png`;
 
   return {
     title: `${title} | Plan był inny`,
@@ -31,6 +38,12 @@ export async function generateMetadata({
         },
       ],
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} - Blog Plan był inny`,
+      description: `Sprawdź nasze wpisy w kategorii: ${title}`,
+      images: [imageUrl],
     },
   };
 }
@@ -49,8 +62,26 @@ export default async function CategoryPage({
 
   const categoryName = category?.name || slug;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: categoryName,
+    description: `Wpisy z kategorii ${categoryName} na blogu Plan był inny`,
+    url: `${SITE_URL}/kategoria/${slug}`,
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${SITE_URL}/wpis/${post.slug}`,
+      name: post.title,
+    })),
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HomeBaner />
       <div className="container mx-auto bg-white py-10 grid gap-10 lg:grid-cols-24">
         <div className="lg:col-start-2 lg:col-span-15">

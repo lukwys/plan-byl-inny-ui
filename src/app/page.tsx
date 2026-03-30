@@ -3,11 +3,27 @@ import { strapiService } from "@/services/strapi";
 import { HomeBaner } from "@/components/home-baner";
 import { Sidebar } from "@/components/sidebar";
 import { Metadata } from "next";
+import { SITE_URL } from "@/config/next";
 
 export const metadata: Metadata = {
   title: "Plan był inny - Blog o podróżach i przygodach",
   description:
     "Bikepacking, nurkowanie i wyprawy bez sztywnego planu. Wejdź do świata Łukasza i zobacz, gdzie kończą się plany, a zaczyna przygoda.",
+  openGraph: {
+    title: "Plan był inny - Blog o podróżach i przygodach",
+    description:
+      "Bikepacking, nurkowanie i wyprawy bez sztywnego planu. Wejdź do świata Łukasza i zobacz, gdzie kończą się plany, a zaczyna przygoda.",
+    url: SITE_URL,
+    type: "website",
+    images: [{ url: `${SITE_URL}/logo.png` }],
+  },
+  twitter: {
+    card: "summary",
+    title: "Plan był inny - Blog o podróżach i przygodach",
+    description:
+      "Bikepacking, nurkowanie i wyprawy bez sztywnego planu. Wejdź do świata Łukasza i zobacz, gdzie kończą się plany, a zaczyna przygoda.",
+    images: [`${SITE_URL}/logo.png`],
+  },
 };
 
 export default async function Home() {
@@ -17,7 +33,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Plan był inny",
-    url: "https://plan-byl-inny.pl",
+    url: SITE_URL,
     description: "Blog o podróżach, rowerze, nurkowaniu i DIY",
     author: {
       "@type": "Person",
