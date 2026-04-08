@@ -62,6 +62,10 @@ export const NewPost = ({
             stronie plan-byl-inny.pl.
             <br />
             <br />
+            <Link href="{{{ RESEND_UNSUBSCRIBE_URL }}}" style={link}>
+              Wypisz się
+            </Link>
+            {" · "}
             <Link href={`${SITE_URL}/polityka-prywatnosci`} style={link}>
               Polityka prywatności
             </Link>

@@ -2,20 +2,20 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { render } from "@react-email/render";
 import {
-  RESEND_API_KEY,
   RESEND_AUDIENCE_ID,
   NEWSLETTER_FROM_EMAIL,
-  STRAPI_WEBHOOK_SECRET,
+  RESEND_CONTACTS_API_KEY,
 } from "@/config/resend";
 import { strapiService } from "@/services/strapi";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { NewPost } from "@/components/emails/new-post";
+import { STRAPI_API_TOKEN } from "@/config/strapi";
 
-const resend = new Resend(RESEND_API_KEY);
+const resend = new Resend(RESEND_CONTACTS_API_KEY);
 
 export async function POST(req: Request) {
   const secret = req.headers.get("x-strapi-webhook-secret");
-  if (!secret || secret !== STRAPI_WEBHOOK_SECRET) {
+  if (!secret || secret !== STRAPI_API_TOKEN) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -53,14 +53,20 @@ export async function POST(req: Request) {
 
   if (error) {
     console.error("Failed to create broadcast:", error);
-    return NextResponse.json({ error: "Failed to create broadcast" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create broadcast" },
+      { status: 500 },
+    );
   }
 
   const { error: sendError } = await resend.broadcasts.send(data!.id);
 
   if (sendError) {
     console.error("Failed to send broadcast:", sendError);
-    return NextResponse.json({ error: "Failed to send broadcast" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to send broadcast" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ ok: true });
