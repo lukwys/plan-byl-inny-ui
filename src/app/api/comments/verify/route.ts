@@ -121,9 +121,9 @@ export async function GET(req: Request) {
   const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
   if (postSlug) {
-    revalidatePath(`/posts/${postSlug}`);
+    revalidatePath(`/wpis/${postSlug}`);
     return NextResponse.redirect(
-      `${siteUrl}/posts/${postSlug}?comment=verified`,
+      `${siteUrl}/wpis/${postSlug}?comment=verified`,
     );
   }
 

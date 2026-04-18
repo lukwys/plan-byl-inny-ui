@@ -12,7 +12,7 @@ export const strapiService = {
   async getHomepage(): Promise<HomePageModel> {
     return requestData<HomePageModel>(
       `${STRAPI_URL}/api/homepage?populate=baner`,
-      { revalidate: 3600 },
+      { revalidate: 3600, tags: ["homepage"] },
     );
   },
   async getPosts(categorySlug?: string): Promise<PostModel[]> {
@@ -28,7 +28,7 @@ export const strapiService = {
     );
 
     return requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${query}`, {
-      revalidate: 60,
+      revalidate: 60, tags: ["posts"],
     });
   },
   async getCategories(): Promise<CategoryModel[]> {
@@ -55,6 +55,7 @@ export const strapiService = {
 
     return requestData<CategoryModel[]>(
       `${STRAPI_URL}/api/categories?${query}`,
+      { tags: ["categories"] },
     );
   },
   async getPostBySlug(slug: string): Promise<PostModel | null> {
@@ -81,7 +82,7 @@ export const strapiService = {
 
     const posts = await requestData<PostModel[]>(
       `${STRAPI_URL}/api/posts?${query}`,
-      { revalidate: 3600 },
+      { tags: [`post-${slug}`] },
     );
 
     return posts[0] ?? null;
@@ -89,7 +90,7 @@ export const strapiService = {
   async getSocialLinks(): Promise<SocialLinkModel[]> {
     return requestData<SocialLinkModel[]>(
       `${STRAPI_URL}/api/links?populate=icon`,
-      { revalidate: 86400 },
+      { revalidate: 86400, tags: ["social-links"] },
     );
   },
   async getPublishedComments(
@@ -147,7 +148,7 @@ export const strapiService = {
     );
 
     return requestData<AboutMeModel>(`${STRAPI_URL}/api/about-me?${query}`, {
-      revalidate: 86400,
+      revalidate: 86400, tags: ["about-me"],
     });
   },
   async getCategoryBySlug(slug: string): Promise<CategoryModel | null> {
@@ -163,6 +164,7 @@ export const strapiService = {
 
     const categories = await requestData<CategoryModel[]>(
       `${STRAPI_URL}/api/categories?${query}`,
+      { tags: ["categories"] },
     );
     return categories[0] ?? null;
   },
