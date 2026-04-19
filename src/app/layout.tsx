@@ -3,10 +3,8 @@ import { SITE_URL } from "@/config/next";
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { PreviewBanner } from "@/components/preview-banner";
 import { DM_Sans, EB_Garamond } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { draftMode } from "next/headers";
 
 const dmSans = DM_Sans({
   subsets: ["latin", "latin-ext"],
@@ -33,17 +31,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isEnabled: isDraftMode } = await draftMode();
-
   return (
     <html lang="pl" className={`${dmSans.variable} ${ebGaramond.variable}`}>
       <body className="min-h-screen flex flex-col lg:bg-[url('/background.png')] lg:bg-repeat lg:bg-[length:10%_auto]">
-        {isDraftMode && <PreviewBanner />}
         <Header />
         <div className="flex-1 flex flex-col">{children}</div>
         <Footer />

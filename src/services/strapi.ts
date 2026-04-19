@@ -1,5 +1,5 @@
 import { draftMode } from "next/headers";
-import { STRAPI_URL } from "@/config/strapi";
+import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
 import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
@@ -86,7 +86,9 @@ export const strapiService = {
 
     const posts = await requestData<PostModel[]>(
       `${STRAPI_URL}/api/posts?${query}`,
-      isDraftMode ? { revalidate: false } : { tags: [`post-${slug}`] },
+      isDraftMode
+        ? { revalidate: false, headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` } }
+        : { tags: [`post-${slug}`] },
     );
 
     return posts[0] ?? null;
