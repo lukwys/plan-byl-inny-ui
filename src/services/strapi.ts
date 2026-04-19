@@ -1,3 +1,4 @@
+import { draftMode } from "next/headers";
 import { STRAPI_URL } from "@/config/strapi";
 import { requestData } from "@/lib/http/requestData";
 import { AboutMeModel } from "@/types/about-me";
@@ -59,6 +60,8 @@ export const strapiService = {
     );
   },
   async getPostBySlug(slug: string): Promise<PostModel | null> {
+    const { isEnabled: isDraftMode } = await draftMode();
+
     const query = qs.stringify(
       {
         filters: {
@@ -76,13 +79,14 @@ export const strapiService = {
             },
           },
         },
+        ...(isDraftMode && { status: "draft" }),
       },
       { encodeValuesOnly: true },
     );
 
     const posts = await requestData<PostModel[]>(
       `${STRAPI_URL}/api/posts?${query}`,
-      { tags: [`post-${slug}`] },
+      isDraftMode ? { revalidate: false } : { tags: [`post-${slug}`] },
     );
 
     return posts[0] ?? null;
