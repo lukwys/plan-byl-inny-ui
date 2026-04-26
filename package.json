@@ -20,6 +20,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "resend": "^6.9.2",
+    "yet-another-react-lightbox": "^3.31.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
