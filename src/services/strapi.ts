@@ -73,7 +73,9 @@ export const strapiService = {
           content_blocks: {
             on: {
               "content.gallery": {
-                populate: { image_gallery: true },
+                populate: {
+                  image_gallery: true,
+                },
               },
               "content.paragraph-md": true,
             },
@@ -139,7 +141,7 @@ export const strapiService = {
                 "content.gallery": {
                   populate: {
                     image_gallery: {
-                      fields: ["url", "alternativeText"],
+                      fields: ["url", "alternativeText", "caption", "width", "height"],
                     },
                   },
                 },

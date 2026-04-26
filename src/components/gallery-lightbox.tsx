@@ -1,0 +1,81 @@
+"use client";
+
+import Lightbox from "yet-another-react-lightbox";
+import Captions from "yet-another-react-lightbox/plugins/captions";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/captions.css";
+import { useState } from "react";
+import Image from "next/image";
+
+export type LightboxImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption?: string;
+};
+
+type Props = {
+  images: LightboxImage[];
+  gridClass: string;
+};
+
+export const GalleryClient = ({ images, gridClass }: Props) => {
+  const [index, setIndex] = useState(-1);
+  const count = images.length;
+
+  const slides = images.map((img) => ({
+    src: img.src,
+    alt: img.alt,
+    width: img.width,
+    height: img.height,
+    description: img.caption,
+  }));
+
+  return (
+    <>
+      <div className={`my-6 grid gap-4 ${gridClass}`}>
+        {images.map((img, i) => (
+          <button
+            key={img.src + i}
+            type="button"
+            onClick={() => setIndex(i)}
+            aria-label="Otwórz zdjęcie w powiększeniu"
+            className={[
+              "group relative w-full overflow-hidden rounded-xl cursor-zoom-in",
+              "h-[260px] sm:h-[320px] lg:h-[420px] xl:h-[600px]",
+              count === 1 ? "mx-auto sm:max-w-[640px]" : "",
+            ].join(" ")}
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              sizes={
+                count === 1
+                  ? "(min-width: 640px) 640px, 100vw"
+                  : count === 2
+                    ? "(min-width: 640px) 50vw, 100vw"
+                    : "(min-width: 640px) 33vw, 100vw"
+              }
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            />
+            {img.caption && (
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10">
+                <p className="text-sm text-white/90 leading-snug text-left">{img.caption}</p>
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      <Lightbox
+        open={index >= 0}
+        index={index}
+        close={() => setIndex(-1)}
+        slides={slides}
+        plugins={[Captions]}
+      />
+    </>
+  );
+};
