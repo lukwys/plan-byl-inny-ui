@@ -19,7 +19,7 @@ export const strapiService = {
   async getPosts(categorySlug?: string): Promise<PostModel[]> {
     const query = qs.stringify(
       {
-        sort: ["date:asc"],
+        sort: ["date:desc"],
         populate: ["cover_image", "category"],
         filters: categorySlug
           ? { category: { slug: { $eq: categorySlug } } }

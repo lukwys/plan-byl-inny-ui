@@ -123,6 +123,16 @@ export default async function PostPage({
                               </p>
                             );
                           },
+                          a: ({ href, children }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[var(--color-main-red)] underline underline-offset-2 hover:opacity-75 transition-opacity"
+                            >
+                              {children}
+                            </a>
+                          ),
                           blockquote: ({ children }) => (
                             <blockquote
                               className="font-eb-garamond my-6 px-6 py-4 italic rounded-r-xl shadow-sm border-l-4 border-[var(--color-main-red)]"
