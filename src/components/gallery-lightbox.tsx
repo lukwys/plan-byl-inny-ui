@@ -22,6 +22,7 @@ type Props = {
 
 export const GalleryClient = ({ images, gridClass }: Props) => {
   const [index, setIndex] = useState(-1);
+  const [lightboxMounted, setLightboxMounted] = useState(false);
   const count = images.length;
 
   const slides = images.map((img) => ({
@@ -39,8 +40,8 @@ export const GalleryClient = ({ images, gridClass }: Props) => {
           <button
             key={img.src + i}
             type="button"
-            onClick={() => setIndex(i)}
-            aria-label="Otwórz zdjęcie w powiększeniu"
+            onClick={() => { setLightboxMounted(true); setIndex(i); }}
+            aria-label={img.caption ? `Otwórz zdjęcie w powiększeniu: ${img.caption}` : "Otwórz zdjęcie w powiększeniu"}
             className={[
               "group relative w-full overflow-hidden rounded-xl cursor-zoom-in",
               "h-[260px] sm:h-[320px] lg:h-[420px] xl:h-[600px]",
@@ -60,22 +61,25 @@ export const GalleryClient = ({ images, gridClass }: Props) => {
               }
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
-            {img.caption && (
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10">
-                <p className="text-sm text-white/90 leading-snug text-left">{img.caption}</p>
-              </div>
-            )}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10">
+              {img.caption && (
+                <p className="text-sm text-white/90 leading-snug text-center">{img.caption}</p>
+              )}
+            </div>
           </button>
         ))}
       </div>
 
-      <Lightbox
-        open={index >= 0}
-        index={index}
-        close={() => setIndex(-1)}
-        slides={slides}
-        plugins={[Captions]}
-      />
+      {lightboxMounted && (
+        <Lightbox
+          open={index >= 0}
+          index={index}
+          close={() => setIndex(-1)}
+          slides={slides}
+          plugins={[Captions]}
+          captions={{ descriptionTextAlign: "center" }}
+        />
+      )}
     </>
   );
 };
