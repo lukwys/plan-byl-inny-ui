@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { BlogPost } from "@/components/blog-post";
+import { NewsletterStatus } from "@/components/newsletter-status";
 import { strapiService } from "@/services/strapi";
 import { HomeBaner } from "@/components/home-baner";
 import { Sidebar } from "@/components/sidebar";
@@ -47,6 +49,10 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      <Suspense fallback={null}>
+        <NewsletterStatus />
+      </Suspense>
 
       <HomeBaner />
 

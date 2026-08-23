@@ -5,7 +5,11 @@ import { Divider } from "./divider";
 import { Category } from "./category";
 import { Newsletter } from "./newsletter";
 
-export const Sidebar = async () => {
+type SidebarProps = {
+  showNewsletter?: boolean;
+};
+
+export const Sidebar = async ({ showNewsletter = true }: SidebarProps) => {
   const socialLinks = await strapiService.getSocialLinks();
   const categories = await strapiService.getCategories();
 
@@ -32,8 +36,12 @@ export const Sidebar = async () => {
           </div>
         </div>
       )}
-      <Divider />
-      <Newsletter />
+      {showNewsletter && (
+        <>
+          <Divider />
+          <Newsletter />
+        </>
+      )}
     </div>
   );
 };

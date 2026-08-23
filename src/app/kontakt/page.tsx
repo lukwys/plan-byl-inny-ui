@@ -7,7 +7,7 @@ import { SITE_URL } from "@/config/next";
 export const metadata: Metadata = {
   title: "Kontakt | Plan był inny",
   description:
-    "Jeśli masz pytanie, chcesz coś skomentować albo po prostu się odezwać — śmiało. Odpowiadam, gdy tylko złapię chwilę lub znajdź mnie w mediach społecznościowych.",
+    "Jeśli masz pytanie, chcesz coś skomentować albo po prostu się odezwać – śmiało. Odpowiadam, gdy tylko złapię chwilę lub znajdź mnie w mediach społecznościowych.",
   openGraph: {
     title: "Skontaktuj się ze mną - Plan był inny",
     description:
@@ -38,7 +38,7 @@ const ContactPage = async () => {
               </h2>
               <p className="leading-relaxed">
                 Jeśli masz pytanie, chcesz coś skomentować albo po prostu się
-                odezwać — śmiało. Odpowiadam, gdy tylko złapię chwilę.
+                odezwać – śmiało. Odpowiadam, gdy tylko złapię chwilę.
               </p>
               <div className="flex gap-4 mt-6">
                 {socialLinks.map((link) => (

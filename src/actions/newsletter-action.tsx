@@ -26,6 +26,7 @@ export type NewsletterState = {
   error?: string;
   errors?: ZodErrors<NewsletterFormData>;
   message?: string;
+  alreadySubscribed?: boolean;
 };
 
 export async function newsletterAction(
@@ -45,7 +46,11 @@ export async function newsletterAction(
 
   const { email, hp } = validatedFields.data;
 
-  if (hp) return { success: true, message: "OK" };
+  if (hp)
+    return {
+      success: true,
+      message: "Sprawdź skrzynkę e-mail i potwierdź subskrypcję.",
+    };
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
 
@@ -69,6 +74,7 @@ export async function newsletterAction(
     if (existingContact) {
       return {
         success: true,
+        alreadySubscribed: true,
         message: "Plan był inny, ale Ty już z nami jesteś!",
       };
     }
