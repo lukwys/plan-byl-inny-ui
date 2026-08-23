@@ -28,6 +28,7 @@ export const Newsletter = ({
 }: NewsletterProps) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isVerificationStarted, setIsVerificationStarted] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
@@ -57,12 +58,18 @@ export const Newsletter = ({
   };
 
   const isButtonDisabled = isPending || !isFormValid || !token;
+  const isAwaitingVerification = isFormValid && !token && !isPending;
 
   return (
     <div className="text-center px-2">
       <h3 className="font-dm-sans font-semibold text-xl mb-4">{heading}</h3>
       <p className="font-eb-garamond mb-4">{description}</p>
-      <form ref={formRef} action={action} onInput={handleFormInput}>
+      <form
+        ref={formRef}
+        action={action}
+        onInput={handleFormInput}
+        onFocus={() => setIsVerificationStarted(true)}
+      >
         <label className="block">
           <span className="sr-only">E-mail</span>
           <input
@@ -87,16 +94,18 @@ export const Newsletter = ({
           className="hidden"
           aria-hidden="true"
         />
-        <div className="flex justify-center">
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={TURNSTILE_SITE_KEY ?? ""}
-            onSuccess={setToken}
-            onExpire={() => setToken("")}
-            onError={() => setToken("")}
-            options={{ theme: "light", size: "flexible" }}
-          />
-        </div>
+        {isVerificationStarted && (
+          <div className="flex justify-center">
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={TURNSTILE_SITE_KEY ?? ""}
+              onSuccess={setToken}
+              onExpire={() => setToken("")}
+              onError={() => setToken("")}
+              options={{ theme: "light", size: "flexible" }}
+            />
+          </div>
+        )}
         <div className="mt-6 flex justify-center">
           <button
             type="submit"
@@ -117,6 +126,11 @@ export const Newsletter = ({
           . Twoje dane są u nas bezpieczne.
         </p>
         <div className="mt-3 min-h-[20px]">
+          {isAwaitingVerification && (
+            <p className="text-sm text-gray-500" role="status">
+              Trwa weryfikacja antyspamowa...
+            </p>
+          )}
           {(state.message || state.error) && (
             <p
               className={`text-sm ${state.success ? "text-green-700" : "text-red-700"}`}

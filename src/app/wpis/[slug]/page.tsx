@@ -175,7 +175,7 @@ export default async function PostPage({
         </div>
         <aside className="lg:col-start-18 lg:col-span-6">
           <div className="block lg:hidden h-px bg-neutral-200 my-8" />
-          <Sidebar />
+          <Sidebar showNewsletter={false} />
         </aside>
       </div>
     </main>
