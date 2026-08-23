@@ -31,10 +31,10 @@ const PrivacyPolicyPage = () => {
             <span className="block mt-2 font-medium">Łukasz Wysocki</span>
             Kontakt:{" "}
             <a
-              href="mailto:lwysocki91@gmail.com"
+              href="mailto:kontakt@plan-byl-inny.pl"
               className="text-black underline"
             >
-              lwysocki91@gmail.com
+              kontakt@plan-byl-inny.pl
             </a>
           </p>
         </section>

@@ -32,7 +32,7 @@ export const NewPost = ({
   return (
     <Html>
       <Head />
-      <Preview>{title} — nowy wpis na blogu Plan był inny</Preview>
+      <Preview>{title} – nowy wpis na blogu Plan był inny</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>
