@@ -3,7 +3,7 @@ import { revalidateTag } from "next/cache";
 import { STRAPI_API_TOKEN } from "@/config/strapi";
 
 const MODEL_TAGS: Record<string, string[]> = {
-  post: ["posts"],
+  post: ["posts", "categories"],
   category: ["categories"],
   homepage: ["homepage"],
   link: ["social-links"],
