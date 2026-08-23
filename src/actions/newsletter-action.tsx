@@ -45,7 +45,11 @@ export async function newsletterAction(
 
   const { email, hp } = validatedFields.data;
 
-  if (hp) return { success: true, message: "OK" };
+  if (hp)
+    return {
+      success: true,
+      message: "Sprawdź skrzynkę e-mail i potwierdź subskrypcję.",
+    };
 
   const turnstileToken = String(formData.get("cf-turnstile-response") ?? "");
 

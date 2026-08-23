@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
-import { Turnstile } from "@marsidev/react-turnstile";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { newsletterAction } from "@/actions/newsletter-action";
 import { newsletterSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
@@ -12,13 +12,24 @@ type NewsletterProps = {
   description?: string;
 };
 
+const ERROR_MESSAGES: Record<string, string> = {
+  VALIDATION_FAILED: "Podaj poprawny adres e-mail.",
+  TURNSTILE_REQUIRED:
+    "Poczekaj chwilę na zakończenie weryfikacji i spróbuj ponownie.",
+  TURNSTILE_INVALID: "Weryfikacja nie powiodła się. Spróbuj jeszcze raz.",
+};
+
+const FALLBACK_ERROR_MESSAGE =
+  "Coś poszło nie tak. Spróbuj ponownie za chwilę.";
+
 export const Newsletter = ({
   heading = "Gdzie jesteśmy?",
   description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany.",
-}: NewsletterProps = {}) => {
+}: NewsletterProps) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const [state, action, isPending] = useActionState(newsletterAction, {
     success: false,
@@ -27,10 +38,17 @@ export const Newsletter = ({
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
-      setToken("");
       setIsFormValid(false);
     }
-  }, [state.success]);
+
+    const tokenWasSpent =
+      state.success || (!!state.error && state.error !== "VALIDATION_FAILED");
+
+    if (tokenWasSpent) {
+      setToken("");
+      turnstileRef.current?.reset();
+    }
+  }, [state]);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -71,8 +89,11 @@ export const Newsletter = ({
         />
         <div className="flex justify-center">
           <Turnstile
+            ref={turnstileRef}
             siteKey={TURNSTILE_SITE_KEY ?? ""}
             onSuccess={setToken}
+            onExpire={() => setToken("")}
+            onError={() => setToken("")}
             options={{ theme: "light", size: "flexible" }}
           />
         </div>
@@ -103,9 +124,8 @@ export const Newsletter = ({
             >
               {state.success
                 ? state.message
-                : state.error === "VALIDATION_FAILED"
-                  ? "Błędny e-mail"
-                  : state.error}
+                : (ERROR_MESSAGES[state.error ?? ""] ??
+                  FALLBACK_ERROR_MESSAGE)}
             </p>
           )}
         </div>
