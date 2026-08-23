@@ -24,7 +24,7 @@ const FALLBACK_ERROR_MESSAGE =
 
 export const Newsletter = ({
   heading = "Gdzie jesteśmy?",
-  description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany. Jeden mail na wpis, nic poza tym — wypisujesz się jednym kliknięciem.",
+  description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany. Jeden mail na wpis, nic poza tym – wypisujesz się jednym kliknięciem.",
 }: NewsletterProps) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -74,7 +74,7 @@ export const Newsletter = ({
         <p className="font-eb-garamond">{state.message}</p>
         {!state.alreadySubscribed && (
           <p className="mt-3 text-xs text-gray-500 font-light">
-            Nie widzisz maila? Zajrzyj do folderu ze spamem — czasem tam ląduje.
+            Nie widzisz maila? Zajrzyj do folderu ze spamem – czasem tam ląduje.
           </p>
         )}
       </div>
