@@ -24,12 +24,11 @@ const FALLBACK_ERROR_MESSAGE =
 
 export const Newsletter = ({
   heading = "Gdzie jesteśmy?",
-  description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany.",
+  description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany. Jeden mail na wpis, nic poza tym — wypisujesz się jednym kliknięciem.",
 }: NewsletterProps) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isVerificationStarted, setIsVerificationStarted] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
   const [state, action, isPending] = useActionState(newsletterAction, {
@@ -37,13 +36,8 @@ export const Newsletter = ({
   });
 
   useEffect(() => {
-    if (state.success) {
-      formRef.current?.reset();
-      setIsFormValid(false);
-    }
-
     const tokenWasSpent =
-      state.success || (!!state.error && state.error !== "VALIDATION_FAILED");
+      !!state.error && state.error !== "VALIDATION_FAILED";
 
     if (tokenWasSpent) {
       setToken("");
@@ -60,12 +54,38 @@ export const Newsletter = ({
   const isButtonDisabled = isPending || !isFormValid || !token;
   const isAwaitingVerification = isFormValid && !token && !isPending;
 
+  if (state.success) {
+    return (
+      <div className="text-center px-2" role="status">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.5}
+          aria-hidden="true"
+          className="mx-auto mb-4 h-12 w-12 text-emerald-700"
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="m8 12.5 2.5 2.5 5.5-5.5" strokeLinecap="round" />
+        </svg>
+        <h3 className="font-dm-sans font-semibold text-xl mb-3">
+          {state.alreadySubscribed ? "Już jesteś na liście" : "Sprawdź skrzynkę"}
+        </h3>
+        <p className="font-eb-garamond">{state.message}</p>
+        {!state.alreadySubscribed && (
+          <p className="mt-3 text-xs text-gray-500 font-light">
+            Nie widzisz maila? Zajrzyj do folderu ze spamem — czasem tam ląduje.
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="text-center px-2">
       <h3 className="font-dm-sans font-semibold text-xl mb-4">{heading}</h3>
       <p className="font-eb-garamond mb-4">{description}</p>
       <form
-        ref={formRef}
         action={action}
         onInput={handleFormInput}
         onFocus={() => setIsVerificationStarted(true)}
@@ -131,15 +151,9 @@ export const Newsletter = ({
               Trwa weryfikacja antyspamowa...
             </p>
           )}
-          {(state.message || state.error) && (
-            <p
-              className={`text-sm ${state.success ? "text-green-700" : "text-red-700"}`}
-              role="status"
-            >
-              {state.success
-                ? state.message
-                : (ERROR_MESSAGES[state.error ?? ""] ??
-                  FALLBACK_ERROR_MESSAGE)}
+          {state.error && (
+            <p className="text-sm text-red-700" role="status">
+              {ERROR_MESSAGES[state.error] ?? FALLBACK_ERROR_MESSAGE}
             </p>
           )}
         </div>

@@ -26,6 +26,7 @@ export type NewsletterState = {
   error?: string;
   errors?: ZodErrors<NewsletterFormData>;
   message?: string;
+  alreadySubscribed?: boolean;
 };
 
 export async function newsletterAction(
@@ -73,6 +74,7 @@ export async function newsletterAction(
     if (existingContact) {
       return {
         success: true,
+        alreadySubscribed: true,
         message: "Plan był inny, ale Ty już z nami jesteś!",
       };
     }

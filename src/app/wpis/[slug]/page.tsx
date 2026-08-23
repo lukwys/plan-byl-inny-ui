@@ -162,7 +162,7 @@ export default async function PostPage({
           <section className="mt-16 p-10 bg-white/40 backdrop-blur-[2px] border border-slate-200/50 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] rounded-[2rem]">
             <Newsletter
               heading="Podobała Ci się ta historia?"
-              description="Zapisz się, a dam Ci znać mailem, gdy pojawi się kolejna opowieść o tym, jak życie zweryfikowało moje plany."
+              description="Kolejna trafi do Ciebie mailem, gdy tylko powstanie. Jeden mail na nowy wpis, żadnych reklam — wypisujesz się jednym kliknięciem."
             />
           </section>
           <section className="mt-16 border-t pt-10">
