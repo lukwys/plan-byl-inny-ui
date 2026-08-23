@@ -7,7 +7,15 @@ import { newsletterSchema } from "@/lib/validation/schemas";
 import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
 import Link from "next/link";
 
-export const Newsletter = () => {
+type NewsletterProps = {
+  heading?: string;
+  description?: string;
+};
+
+export const Newsletter = ({
+  heading = "Gdzie jesteśmy?",
+  description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany.",
+}: NewsletterProps = {}) => {
   const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -34,13 +42,8 @@ export const Newsletter = () => {
 
   return (
     <div className="text-center px-2">
-      <h3 className="font-dm-sans font-semibold text-xl mb-4">
-        Gdzie jesteśmy?
-      </h3>
-      <p className="font-eb-garamond mb-4">
-        Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak
-        życie zweryfikowało moje plany.
-      </p>
+      <h3 className="font-dm-sans font-semibold text-xl mb-4">{heading}</h3>
+      <p className="font-eb-garamond mb-4">{description}</p>
       <form ref={formRef} action={action} onInput={handleFormInput}>
         <label className="block">
           <span className="sr-only">E-mail</span>

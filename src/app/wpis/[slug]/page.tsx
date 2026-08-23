@@ -8,6 +8,7 @@ import { AuthorNote } from "@/components/author-note";
 import { strapiService } from "@/services/strapi";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { Sidebar } from "@/components/sidebar";
+import { Newsletter } from "@/components/newsletter";
 import { PostInfo } from "@/components/post-info";
 import { Metadata } from "next";
 import { SITE_URL } from "@/config/next";
@@ -158,6 +159,12 @@ export default async function PostPage({
               }
             })}
           </article>
+          <section className="mt-16 p-10 bg-white/40 backdrop-blur-[2px] border border-slate-200/50 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] rounded-[2rem]">
+            <Newsletter
+              heading="Podobała Ci się ta historia?"
+              description="Zapisz się, a dam Ci znać mailem, gdy pojawi się kolejna opowieść o tym, jak życie zweryfikowało moje plany."
+            />
+          </section>
           <section className="mt-16 border-t pt-10">
             <Comments
               postDocumentId={post.documentId}
