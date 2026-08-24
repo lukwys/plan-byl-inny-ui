@@ -15,16 +15,22 @@ import {
 
 interface NewsletterConfirmProps {
   confirmUrl: string;
+  isReminder?: boolean;
 }
 
-export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
+export const NewsletterConfirm = ({
+  confirmUrl,
+  isReminder = false,
+}: NewsletterConfirmProps) => {
   const currentYear = new Date().getFullYear();
 
   return (
     <Html>
       <Head />
       <Preview>
-        Potwierdź swój zapis do newslettera &bdquo;Plan był inny&rdquo;
+        {isReminder
+          ? "Twój zapis do newslettera czeka na potwierdzenie"
+          : "Potwierdź swój zapis do newslettera „Plan był inny”"}
       </Preview>
       <Body style={main}>
         <Container style={container}>
@@ -36,17 +42,31 @@ export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
               style={logo}
             />
           </Section>
-          <Heading style={h1}>Hej! Fajnie, że jesteś</Heading>
+          <Heading style={h1}>
+            {isReminder ? "Zostało jedno kliknięcie" : "Hej! Fajnie, że jesteś"}
+          </Heading>
           <Text style={text}>
-            Zapisałeś/aś się do newslettera bloga <strong>Plan był inny</strong>
-            . Zanim wyślę Ci pierwsze historie z trasy, muszę mieć pewność, że
-            to Ty. Kliknij poniższy przycisk, aby potwierdzić swój adres e-mail.
+            {isReminder ? (
+              <>
+                Jakiś czas temu zapisałeś/aś się do newslettera bloga{" "}
+                <strong>Plan był inny</strong>, ale zapis nie został
+                potwierdzony. Wysyłam nowy link — kliknij, a od tej pory
+                historie z trasy będą trafiać prosto do Ciebie.
+              </>
+            ) : (
+              <>
+                Zapisałeś/aś się do newslettera bloga{" "}
+                <strong>Plan był inny</strong>. Zanim wyślę Ci pierwsze historie
+                z trasy, muszę mieć pewność, że to Ty. Kliknij poniższy
+                przycisk, aby potwierdzić swój adres e-mail.
+              </>
+            )}
           </Text>
           <Section style={btnContainer}>
             <Link style={button} href={confirmUrl}>
               POTWIERDZAM ZAPIS
             </Link>
-            <Text style={expiryWarning}>Link jest ważny przez 30 minut.</Text>
+            <Text style={expiryWarning}>Link jest ważny przez 24 godziny.</Text>
           </Section>
           <Text style={subtext}>
             Jeśli przycisk nie działa, skopiuj ten link do przeglądarki:
@@ -58,7 +78,8 @@ export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
           <Hr style={hr} />
           <Text style={footer}>
             Otrzymałeś ten e-mail, ponieważ zapisałeś się na stronie
-            plan-byl-inny.pl. Jeśli to pomyłka, po prostu zignoruj tę wiadomość.
+            plan-byl-inny.pl. Jeśli to pomyłka, po prostu zignoruj tę wiadomość
+            {isReminder ? " — to ostatnie przypomnienie" : ""}.
             <br />
             <br />
             Zapoznaj się z naszą{" "}

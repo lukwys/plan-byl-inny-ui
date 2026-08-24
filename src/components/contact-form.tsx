@@ -16,7 +16,7 @@ export const ContactForm = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const { token, turnstileProps } = useTurnstile(state);
+  const { token, isMounted, formProps, turnstileProps } = useTurnstile(state);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -35,7 +35,12 @@ export const ContactForm = () => {
   const isButtonDisabled = isPending || !isFormValid || !token;
 
   return (
-    <form ref={formRef} action={action} onInput={handleFormInput}>
+    <form
+      ref={formRef}
+      action={action}
+      onInput={handleFormInput}
+      {...formProps}
+    >
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <label className="block">
           <span className="sr-only">Imię</span>
@@ -87,7 +92,9 @@ export const ContactForm = () => {
         )}
       </label>
       <div className="flex flex-col gap-4 mt-4 items-center">
-        <Turnstile {...turnstileProps} options={{ theme: "light" }} />
+        {isMounted && (
+          <Turnstile {...turnstileProps} options={{ theme: "light" }} />
+        )}
         <button
           type="submit"
           disabled={isButtonDisabled}

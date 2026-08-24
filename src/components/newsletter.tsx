@@ -19,13 +19,12 @@ export const Newsletter = ({
   description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany. Jeden mail na wpis, nic poza tym – wypisujesz się jednym kliknięciem.",
 }: NewsletterProps) => {
   const [isFormValid, setIsFormValid] = useState(false);
-  const [isVerificationStarted, setIsVerificationStarted] = useState(false);
 
   const [state, action, isPending] = useActionState(newsletterAction, {
     success: false,
   });
 
-  const { token, turnstileProps } = useTurnstile(state);
+  const { token, isMounted, formProps, turnstileProps } = useTurnstile(state);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -34,7 +33,7 @@ export const Newsletter = ({
   };
 
   const isButtonDisabled = isPending || !isFormValid || !token;
-  const isAwaitingVerification = isFormValid && !token && !isPending;
+  const isAwaitingVerification = isMounted && isFormValid && !token && !isPending;
 
   if (state.success) {
     return (
@@ -70,7 +69,7 @@ export const Newsletter = ({
       <form
         action={action}
         onInput={handleFormInput}
-        onFocus={() => setIsVerificationStarted(true)}
+        {...formProps}
       >
         <label className="block">
           <span className="sr-only">E-mail</span>
@@ -89,7 +88,7 @@ export const Newsletter = ({
           )}
         </label>
         <Honeypot />
-        {isVerificationStarted && (
+        {isMounted && (
           <div className="flex justify-center">
             <Turnstile
               {...turnstileProps}
