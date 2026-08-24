@@ -4,7 +4,7 @@ import { STRAPI_API_TOKEN } from "@/config/strapi";
 
 const MODEL_TAGS: Record<string, string[]> = {
   post: ["posts", "categories"],
-  category: ["categories"],
+  category: ["categories", "posts"],
   homepage: ["homepage"],
   link: ["social-links"],
   "about-me": ["about-me"],
