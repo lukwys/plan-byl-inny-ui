@@ -11,6 +11,7 @@ export type PostModel = {
   date: string;
   preview: string;
   slug: string;
+  newsletter_sent_at?: string | null;
 };
 
 export type Params = { slug: string };

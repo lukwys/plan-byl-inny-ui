@@ -98,7 +98,8 @@ const PrivacyPolicyPage = () => {
           </h2>
           <p className="text-gray-600 leading-relaxed font-eb-garamond">
             Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia
-            ("prawo do bycia zapomnianym") oraz wycofania zgody na newsletter w
+            (&bdquo;prawo do bycia zapomnianym&rdquo;) oraz wycofania zgody na
+            newsletter w
             dowolnym momencie. W tym celu napisz do mnie na podany wyżej adres
             e-mail.
           </p>

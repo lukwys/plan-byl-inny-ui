@@ -1,7 +1,6 @@
 import { PostModel } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate } from "@/lib/dates/format-date";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { PostInfo } from "./post-info";
 

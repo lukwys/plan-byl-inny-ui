@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { STRAPI_URL } from "@/config/strapi";
 import { SocialLinkModel } from "@/types/social-link";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 

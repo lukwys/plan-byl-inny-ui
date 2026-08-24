@@ -1,10 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
-import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import { useActionState, useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { newsletterAction } from "@/actions/newsletter-action";
 import { newsletterSchema } from "@/lib/validation/schemas";
-import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
+import { useTurnstile } from "@/lib/forms/use-turnstile";
+import { formErrorMessage } from "@/lib/forms/error-messages";
+import { Honeypot } from "./forms/honeypot";
 import Link from "next/link";
 
 type NewsletterProps = {
@@ -12,38 +14,18 @@ type NewsletterProps = {
   description?: string;
 };
 
-const ERROR_MESSAGES: Record<string, string> = {
-  VALIDATION_FAILED: "Podaj poprawny adres e-mail.",
-  TURNSTILE_REQUIRED:
-    "Poczekaj chwilę na zakończenie weryfikacji i spróbuj ponownie.",
-  TURNSTILE_INVALID: "Weryfikacja nie powiodła się. Spróbuj jeszcze raz.",
-};
-
-const FALLBACK_ERROR_MESSAGE =
-  "Coś poszło nie tak. Spróbuj ponownie za chwilę.";
-
 export const Newsletter = ({
   heading = "Gdzie jesteśmy?",
   description = "Zostaw maila, a dam Ci znać, gdy pojawi się nowa historia o tym, jak życie zweryfikowało moje plany. Jeden mail na wpis, nic poza tym – wypisujesz się jednym kliknięciem.",
 }: NewsletterProps) => {
-  const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isVerificationStarted, setIsVerificationStarted] = useState(false);
-  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const [state, action, isPending] = useActionState(newsletterAction, {
     success: false,
   });
 
-  useEffect(() => {
-    const tokenWasSpent =
-      !!state.error && state.error !== "VALIDATION_FAILED";
-
-    if (tokenWasSpent) {
-      setToken("");
-      turnstileRef.current?.reset();
-    }
-  }, [state]);
+  const { token, turnstileProps } = useTurnstile(state);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -106,22 +88,11 @@ export const Newsletter = ({
             </p>
           )}
         </label>
-        <input
-          type="text"
-          name="hp"
-          tabIndex={-1}
-          autoComplete="off"
-          className="hidden"
-          aria-hidden="true"
-        />
+        <Honeypot />
         {isVerificationStarted && (
           <div className="flex justify-center">
             <Turnstile
-              ref={turnstileRef}
-              siteKey={TURNSTILE_SITE_KEY ?? ""}
-              onSuccess={setToken}
-              onExpire={() => setToken("")}
-              onError={() => setToken("")}
+              {...turnstileProps}
               options={{ theme: "light", size: "flexible" }}
             />
           </div>
@@ -153,7 +124,7 @@ export const Newsletter = ({
           )}
           {state.error && (
             <p className="text-sm text-red-700" role="status">
-              {ERROR_MESSAGES[state.error] ?? FALLBACK_ERROR_MESSAGE}
+              {formErrorMessage(state.error)}
             </p>
           )}
         </div>

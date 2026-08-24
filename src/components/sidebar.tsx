@@ -14,7 +14,7 @@ export const Sidebar = async ({ showNewsletter = true }: SidebarProps) => {
   const categories = await strapiService.getCategories();
 
   return (
-    <div className="lg:col-start-18 lg:col-span-6 flex flex-col">
+    <div className="flex flex-col">
       <div>
         <AboutMe />
         <div className="flex gap-3 justify-center mt-3">

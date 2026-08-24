@@ -43,11 +43,11 @@ export const CommentConfirm = ({
           <Heading style={h1}>Dzięki za Twój głos!</Heading>
           <Text style={text}>
             Otrzymałem Twój komentarz pod wpisem: <br />
-            <strong>"{postTitle}"</strong>
+            <strong>&bdquo;{postTitle}&rdquo;</strong>
           </Text>
           <Section style={commentBox}>
             <Text style={commentLabel}>Treść komentarza:</Text>
-            <Text style={commentContent}>"{commentText}"</Text>
+            <Text style={commentContent}>&bdquo;{commentText}&rdquo;</Text>
           </Section>
           <Text style={text}>
             Zanim go opublikuję, muszę potwierdzić, że to Ty. Kliknij przycisk
