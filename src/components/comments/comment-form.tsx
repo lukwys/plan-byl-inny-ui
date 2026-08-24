@@ -29,7 +29,6 @@ export const CommentForm = ({
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
-      // Validity mirrors the DOM the line above just cleared.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFormValid(false);
     }

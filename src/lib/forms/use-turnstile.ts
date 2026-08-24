@@ -18,8 +18,6 @@ export const useTurnstile = (state: ActionState) => {
       state.success || (!!state.error && state.error !== "VALIDATION_FAILED");
 
     if (tokenWasSpent) {
-      // The widget is an external system holding the only copy of the token,
-      // so React state has to follow it here rather than derive the value.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken("");
       widgetRef.current?.reset();
