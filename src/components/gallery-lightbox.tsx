@@ -20,6 +20,28 @@ type Props = {
   gridClass: string;
 };
 
+const TILE_HEIGHTS = [
+  { minWidth: 1280, height: 600 },
+  { minWidth: 1024, height: 420 },
+  { minWidth: 640, height: 320 },
+  { minWidth: 0, height: 260 },
+];
+
+const MAX_TILE_WIDTHS: Record<number, number> = { 1: 640, 2: 480, 3: 320 };
+
+const buildSizes = (image: LightboxImage, count: number) => {
+  const aspect =
+    image.width && image.height ? image.width / image.height : 1.5;
+  const maxTileWidth = MAX_TILE_WIDTHS[Math.min(count, 3)];
+
+  return TILE_HEIGHTS.map(({ minWidth, height }) => {
+    const rendered = Math.ceil(Math.max(maxTileWidth, height * aspect));
+    return minWidth
+      ? `(min-width: ${minWidth}px) ${rendered}px`
+      : `${rendered}px`;
+  }).join(", ");
+};
+
 export const GalleryClient = ({ images, gridClass }: Props) => {
   const [index, setIndex] = useState(-1);
   const [lightboxMounted, setLightboxMounted] = useState(false);
@@ -52,13 +74,7 @@ export const GalleryClient = ({ images, gridClass }: Props) => {
               src={img.src}
               alt={img.alt}
               fill
-              sizes={
-                count === 1
-                  ? "(min-width: 640px) 640px, 100vw"
-                  : count === 2
-                    ? "(min-width: 640px) 50vw, 100vw"
-                    : "(min-width: 640px) 33vw, 100vw"
-              }
+              sizes={buildSizes(img, count)}
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-4 pb-3 pt-10">
