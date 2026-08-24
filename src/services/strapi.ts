@@ -90,7 +90,7 @@ export const strapiService = {
       `${STRAPI_URL}/api/posts?${query}`,
       isDraftMode
         ? { revalidate: false, headers: { Authorization: `Bearer ${STRAPI_API_TOKEN}` } }
-        : { tags: [`post-${slug}`] },
+        : { tags: [`post-${slug}`, "posts"] },
     );
 
     return posts[0] ?? null;
