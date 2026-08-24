@@ -175,7 +175,7 @@ export default async function PostPage({
             />
           </section>
         </div>
-        <aside className="lg:col-start-18 lg:col-span-6 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto">
+        <aside className="lg:col-start-18 lg:col-span-6">
           <div className="block lg:hidden h-px bg-neutral-200 my-8" />
           <Sidebar showNewsletter={false} />
         </aside>
