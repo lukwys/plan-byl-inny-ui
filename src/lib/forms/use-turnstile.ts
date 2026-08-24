@@ -11,6 +11,7 @@ type ActionState = {
 
 export const useTurnstile = (state: ActionState) => {
   const [token, setToken] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
   const widgetRef = useRef<TurnstileInstance>(null);
 
   useEffect(() => {
@@ -26,6 +27,10 @@ export const useTurnstile = (state: ActionState) => {
 
   return {
     token,
+    isMounted,
+    formProps: {
+      onFocus: () => setIsMounted(true),
+    },
     turnstileProps: {
       ref: widgetRef,
       siteKey: TURNSTILE_SITE_KEY ?? "",

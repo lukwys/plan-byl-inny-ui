@@ -24,7 +24,7 @@ export const CommentForm = ({
     success: false,
   });
 
-  const { token, turnstileProps } = useTurnstile(state);
+  const { token, isMounted, formProps, turnstileProps } = useTurnstile(state);
 
   useEffect(() => {
     if (state.success) {
@@ -47,7 +47,12 @@ export const CommentForm = ({
       <h3 className="font-dm-sans font-bold text-xl mb-10">
         Zostaw swój komentarz
       </h3>
-      <form ref={formRef} action={action} onInput={handleFormInput}>
+      <form
+        ref={formRef}
+        action={action}
+        onInput={handleFormInput}
+        {...formProps}
+      >
         <input type="hidden" name="postDocumentId" value={postDocumentId} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <label className="block">
@@ -102,7 +107,9 @@ export const CommentForm = ({
         <Honeypot />
         <input type="hidden" name="postTitle" value={postTitle} />
         <div className="flex flex-col gap-4 mt-4 items-end">
-          <Turnstile {...turnstileProps} options={{ theme: "light" }} />
+          {isMounted && (
+            <Turnstile {...turnstileProps} options={{ theme: "light" }} />
+          )}
           <button
             type="submit"
             disabled={isButtonDisabled}

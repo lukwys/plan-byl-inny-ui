@@ -10,6 +10,7 @@ import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { Sidebar } from "@/components/sidebar";
 import { Newsletter } from "@/components/newsletter";
 import { PostInfo } from "@/components/post-info";
+import { ReadingProgress } from "@/components/reading-progress";
 import { Metadata } from "next";
 import { SITE_URL } from "@/config/next";
 
@@ -78,6 +79,7 @@ export default async function PostPage({
 
   return (
     <main className="mx-auto container bg-white">
+      <ReadingProgress targetId="post-article" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -102,7 +104,7 @@ export default async function PostPage({
       </header>
       <div className="py-10 grid gap-10 lg:grid-cols-24 px-4 lg:px-0">
         <div className="lg:col-span-15 lg:col-start-2">
-          <article className="markdown">
+          <article id="post-article" className="markdown">
             {post.content_blocks.map((block) => {
               switch (block.__component) {
                 case "content.paragraph-md":
@@ -173,7 +175,7 @@ export default async function PostPage({
             />
           </section>
         </div>
-        <aside className="lg:col-start-18 lg:col-span-6">
+        <aside className="lg:col-start-18 lg:col-span-6 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto">
           <div className="block lg:hidden h-px bg-neutral-200 my-8" />
           <Sidebar showNewsletter={false} />
         </aside>
