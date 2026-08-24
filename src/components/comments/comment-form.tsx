@@ -4,6 +4,9 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { commentAction } from "@/actions/comment-action";
 import { commentFormSchema } from "@/lib/validation/schemas";
+import { useTurnstile } from "@/lib/forms/use-turnstile";
+import { formErrorMessage } from "@/lib/forms/error-messages";
+import { Honeypot } from "../forms/honeypot";
 
 interface CommentFormProps {
   postDocumentId: string;
@@ -14,7 +17,6 @@ export const CommentForm = ({
   postDocumentId,
   postTitle,
 }: CommentFormProps) => {
-  const [token, setToken] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -22,10 +24,12 @@ export const CommentForm = ({
     success: false,
   });
 
+  const { token, turnstileProps } = useTurnstile(state);
+
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
-      setToken("");
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFormValid(false);
     }
   }, [state.success]);
@@ -95,21 +99,10 @@ export const CommentForm = ({
             </p>
           )}
         </label>
-        <input
-          type="text"
-          name="hp"
-          tabIndex={-1}
-          autoComplete="off"
-          className="hidden"
-          aria-hidden="true"
-        />
+        <Honeypot />
         <input type="hidden" name="postTitle" value={postTitle} />
         <div className="flex flex-col gap-4 mt-4 items-end">
-          <Turnstile
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
-            onSuccess={setToken}
-            options={{ theme: "light" }}
-          />
+          <Turnstile {...turnstileProps} options={{ theme: "light" }} />
           <button
             type="submit"
             disabled={isButtonDisabled}
@@ -124,9 +117,7 @@ export const CommentForm = ({
               className={`text-sm ${state.success ? "text-green-700" : "text-red-700"}`}
               role="status"
             >
-              {state.success
-                ? state.message
-                : "Coś poszło nie tak. Spróbuj ponownie."}
+              {state.success ? state.message : formErrorMessage(state.error)}
             </p>
           )}
         </div>

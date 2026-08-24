@@ -10,13 +10,17 @@ type PostInfoProps = {
 export const PostInfo = ({ category, date }: PostInfoProps) => {
   return (
     <div className="flex justify-center gap-1 text-xs">
-      <Link
-        href={`/kategoria/${category?.slug}`}
-        className="text-main-red hover:text-main-red-hover"
-      >
-        <p>{category?.name.toUpperCase()}</p>
-      </Link>
-      <p>•</p>
+      {category && (
+        <>
+          <Link
+            href={`/kategoria/${category.slug}`}
+            className="text-main-red hover:text-main-red-hover"
+          >
+            <p>{category.name.toUpperCase()}</p>
+          </Link>
+          <p>•</p>
+        </>
+      )}
       <p>{formatDate(date)}</p>
     </div>
   );

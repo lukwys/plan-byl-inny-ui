@@ -4,7 +4,9 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { contactAction } from "@/actions/contact-action";
 import { contactFormSchema } from "@/lib/validation/schemas";
-import { TURNSTILE_SITE_KEY } from "@/config/turnstile";
+import { useTurnstile } from "@/lib/forms/use-turnstile";
+import { formErrorMessage } from "@/lib/forms/error-messages";
+import { Honeypot } from "./forms/honeypot";
 
 export const ContactForm = () => {
   const [state, action, isPending] = useActionState(contactAction, {
@@ -12,8 +14,9 @@ export const ContactForm = () => {
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const [token, setToken] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const { token, turnstileProps } = useTurnstile(state);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
@@ -24,8 +27,8 @@ export const ContactForm = () => {
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFormValid(false);
-      setToken("");
     }
   }, [state.success]);
 
@@ -67,14 +70,7 @@ export const ContactForm = () => {
           )}
         </label>
       </div>
-      <input
-        type="text"
-        name="hp"
-        tabIndex={-1}
-        autoComplete="off"
-        className="hidden"
-        aria-hidden="true"
-      />
+      <Honeypot />
       <label className="mt-6 block">
         <span className="sr-only">Wiadomość</span>
         <textarea
@@ -91,11 +87,7 @@ export const ContactForm = () => {
         )}
       </label>
       <div className="flex flex-col gap-4 mt-4 items-center">
-        <Turnstile
-          siteKey={TURNSTILE_SITE_KEY ?? ""}
-          onSuccess={setToken}
-          options={{ theme: "light" }}
-        />
+        <Turnstile {...turnstileProps} options={{ theme: "light" }} />
         <button
           type="submit"
           disabled={isButtonDisabled}
@@ -109,11 +101,7 @@ export const ContactForm = () => {
             role="status"
             aria-live="polite"
           >
-            {state.success
-              ? state.message
-              : state.error === "VALIDATION_FAILED"
-                ? "Popraw błędy w formularzu"
-                : state.error}
+            {state.success ? state.message : formErrorMessage(state.error)}
           </p>
         )}
       </div>

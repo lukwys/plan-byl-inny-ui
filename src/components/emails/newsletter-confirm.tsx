@@ -23,7 +23,9 @@ export const NewsletterConfirm = ({ confirmUrl }: NewsletterConfirmProps) => {
   return (
     <Html>
       <Head />
-      <Preview>Potwierdź swój zapis do newslettera "Plan był inny"</Preview>
+      <Preview>
+        Potwierdź swój zapis do newslettera &bdquo;Plan był inny&rdquo;
+      </Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoSection}>

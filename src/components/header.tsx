@@ -20,10 +20,10 @@ export const Header = () => {
     <header className="relative z-50 bg-white">
       <div className="container mx-auto flex items-center justify-between gap-10 px-4 py-2 lg:grid lg:grid-cols-24 lg:px-0 lg:py-5">
         <div className="lg:col-span-4 lg:col-start-2">
-          <Link href="/" className="block" aria-label="Go to homepage">
+          <Link href="/" className="block" aria-label="Przejdź na stronę główną">
             <Image
               src="/logo.png"
-              alt="Site logo"
+              alt="Plan był inny"
               width={176}
               height={56}
               className="h-10 w-auto lg:h-14"
@@ -48,6 +48,7 @@ export const Header = () => {
         />
       </div>
       <div
+        inert={!open}
         className={`lg:hidden absolute top-full left-0 w-full bg-white border-t z-50 transition-all duration-300 ${
           open
             ? "opacity-100 translate-y-0"
