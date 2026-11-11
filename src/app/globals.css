@@ -12,7 +12,8 @@
 
 @layer base {
   .markdown h2 {
-    margin-block: --spacing(4);
+    margin-top: --spacing(10);
+    margin-bottom: --spacing(4);
     font-family: var(--font-dm-sans);
     font-weight: var(--font-weight-semibold);
     font-size: var(--text-2xl);
