@@ -1,6 +1,7 @@
 import { draftMode } from "next/headers";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
+import { requestData, requestJson } from "@/lib/http/requestData";
+import { getPageRange, getTotalPages } from "@/lib/posts/pagination";
 import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
@@ -17,6 +18,43 @@ export const strapiService = {
     );
   },
   async getPosts(categorySlug?: string): Promise<PostModel[]> {
+    const posts: PostModel[] = [];
+    let page = 1;
+    let pageCount = 1;
+
+    // Strapi caps a single response (25 by default, 100 max), so fetch every page.
+    do {
+      const query = qs.stringify(
+        {
+          sort: ["date:desc"],
+          populate: ["cover_image", "category"],
+          filters: categorySlug
+            ? { category: { slug: { $eq: categorySlug } } }
+            : {},
+          pagination: { page, pageSize: 100 },
+        },
+        { encodeValuesOnly: true },
+      );
+
+      const { data, meta } = await requestJson<{
+        data: PostModel[];
+        meta: { pagination: { pageCount: number } };
+      }>(`${STRAPI_URL}/api/posts?${query}`, {
+        revalidate: 60,
+        tags: ["posts"],
+      });
+
+      posts.push(...data);
+      pageCount = meta.pagination.pageCount;
+      page += 1;
+    } while (page <= pageCount);
+
+    return posts;
+  },
+  async getPostsPage(
+    page: number,
+    categorySlug?: string,
+  ): Promise<{ posts: PostModel[]; totalPages: number }> {
     const query = qs.stringify(
       {
         sort: ["date:desc"],
@@ -24,13 +62,20 @@ export const strapiService = {
         filters: categorySlug
           ? { category: { slug: { $eq: categorySlug } } }
           : {},
+        pagination: { ...getPageRange(page), withCount: true },
       },
       { encodeValuesOnly: true },
     );
 
-    return requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${query}`, {
-      revalidate: 60, tags: ["posts"],
+    const { data, meta } = await requestJson<{
+      data: PostModel[];
+      meta: { pagination: { total: number } };
+    }>(`${STRAPI_URL}/api/posts?${query}`, {
+      revalidate: 60,
+      tags: ["posts"],
     });
+
+    return { posts: data, totalPages: getTotalPages(meta.pagination.total) };
   },
   async getCategories(): Promise<CategoryModel[]> {
     const query = qs.stringify(

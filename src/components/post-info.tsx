@@ -5,16 +5,19 @@ import { formatDate } from "@/lib/dates/format-date";
 type PostInfoProps = {
   category?: CategoryModel;
   date: string;
+  align?: "center" | "start";
 };
 
-export const PostInfo = ({ category, date }: PostInfoProps) => {
+export const PostInfo = ({ category, date, align = "center" }: PostInfoProps) => {
   return (
-    <div className="flex justify-center gap-1 text-xs">
+    <div
+      className={`flex gap-1 text-xs ${align === "center" ? "justify-center" : "justify-start"}`}
+    >
       {category && (
         <>
           <Link
             href={`/kategoria/${category.slug}`}
-            className="text-main-red hover:text-main-red-hover"
+            className="relative z-10 text-main-red hover:text-main-red-hover"
           >
             <p>{category.name.toUpperCase()}</p>
           </Link>

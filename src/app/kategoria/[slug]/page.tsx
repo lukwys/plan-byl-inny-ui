@@ -1,8 +1,6 @@
-import { BlogPost } from "@/components/blog-post";
+import { PostsPage } from "@/components/posts-page";
 import { strapiService } from "@/services/strapi";
-import { HomeBaner } from "@/components/home-baner";
 import { Params } from "@/types/post";
-import { Sidebar } from "@/components/sidebar";
 import { Metadata } from "next";
 import { getStrapiImage } from "@/lib/strapi/get-strapi-image";
 import { SITE_URL } from "@/config/next";
@@ -55,8 +53,8 @@ export default async function CategoryPage({
 }) {
   const { slug } = await params;
 
-  const [posts, category] = await Promise.all([
-    strapiService.getPosts(slug),
+  const [{ posts, totalPages }, category] = await Promise.all([
+    strapiService.getPostsPage(1, slug),
     strapiService.getCategoryBySlug(slug),
   ]);
 
@@ -82,31 +80,15 @@ export default async function CategoryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HomeBaner />
-      <div className="container mx-auto bg-white py-10 grid gap-10 lg:grid-cols-24">
-        <div className="lg:col-start-2 lg:col-span-15">
-          <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">
-            Odkryj najnowsze wpisy z kategorii:{" "}
-            <span className="text-main-red">{categoryName.toUpperCase()}</span>
-          </h1>
-          <div className="flex flex-col gap-10">
-            {posts.length > 0 ? (
-              posts.map((post) => (
-                <BlogPost key={post.documentId} post={post} />
-              ))
-            ) : (
-              <p className="text-center text-gray-500">
-                Brak wpisów w tej kategorii.
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-        <aside className="lg:col-start-18 lg:col-span-6">
-          <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-          <Sidebar />
-        </aside>
-      </div>
+      <PostsPage
+        title={categoryName}
+        fallbackTitle={categoryName}
+        posts={posts}
+        currentPage={1}
+        totalPages={totalPages}
+        basePath={`/kategoria/${slug}`}
+        emptyMessage="Brak wpisów w tej kategorii."
+      />
     </div>
   );
 }

@@ -12,12 +12,18 @@ const navLinks = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
+const activeClass =
+  "text-main-red underline decoration-2 underline-offset-8";
+
 export const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   return (
-    <header className="relative z-50 bg-white">
+    <header className="relative z-50 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
       <div className="container mx-auto flex items-center justify-between gap-10 px-4 py-2 lg:grid lg:grid-cols-24 lg:px-0 lg:py-5">
         <div className="lg:col-span-4 lg:col-start-2">
           <Link href="/" className="block" aria-label="Przejdź na stronę główną">
@@ -36,7 +42,10 @@ export const Header = () => {
             <Link
               key={href}
               href={href}
-              className="text-sm font-dm-sans transition-colors hover:text-main-red-hover"
+              aria-current={isActive(href) ? "page" : undefined}
+              className={`text-sm font-dm-sans transition-colors hover:text-main-red-hover ${
+                isActive(href) ? activeClass : ""
+              }`}
             >
               {label}
             </Link>
@@ -61,8 +70,9 @@ export const Header = () => {
               key={href}
               href={href}
               onClick={() => setOpen(false)}
+              aria-current={isActive(href) ? "page" : undefined}
               className={`text-sm font-dm-sans transition-colors ${
-                pathname === href ? "text-main-red" : "text-black"
+                isActive(href) ? activeClass : "text-black"
               }`}
             >
               {label}

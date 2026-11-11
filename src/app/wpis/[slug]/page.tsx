@@ -78,7 +78,7 @@ export default async function PostPage({
   };
 
   return (
-    <main className="mx-auto container bg-white">
+    <main className="mx-auto container bg-white pt-10">
       <ReadingProgress targetId="post-article" />
       <script
         type="application/ld+json"
