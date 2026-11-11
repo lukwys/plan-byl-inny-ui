@@ -18,20 +18,38 @@ export const strapiService = {
     );
   },
   async getPosts(categorySlug?: string): Promise<PostModel[]> {
-    const query = qs.stringify(
-      {
-        sort: ["date:desc"],
-        populate: ["cover_image", "category"],
-        filters: categorySlug
-          ? { category: { slug: { $eq: categorySlug } } }
-          : {},
-      },
-      { encodeValuesOnly: true },
-    );
+    const posts: PostModel[] = [];
+    let page = 1;
+    let pageCount = 1;
 
-    return requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${query}`, {
-      revalidate: 60, tags: ["posts"],
-    });
+    // Strapi caps a single response (25 by default, 100 max), so fetch every page.
+    do {
+      const query = qs.stringify(
+        {
+          sort: ["date:desc"],
+          populate: ["cover_image", "category"],
+          filters: categorySlug
+            ? { category: { slug: { $eq: categorySlug } } }
+            : {},
+          pagination: { page, pageSize: 100 },
+        },
+        { encodeValuesOnly: true },
+      );
+
+      const { data, meta } = await requestJson<{
+        data: PostModel[];
+        meta: { pagination: { pageCount: number } };
+      }>(`${STRAPI_URL}/api/posts?${query}`, {
+        revalidate: 60,
+        tags: ["posts"],
+      });
+
+      posts.push(...data);
+      pageCount = meta.pagination.pageCount;
+      page += 1;
+    } while (page <= pageCount);
+
+    return posts;
   },
   async getPostsPage(
     page: number,
