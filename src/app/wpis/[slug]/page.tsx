@@ -121,7 +121,7 @@ export default async function PostPage({
                             }
 
                             return (
-                              <p className="font-eb-garamond text-lg leading-relaxed">
+                              <p className="font-eb-garamond text-lg md:text-xl leading-relaxed mb-5">
                                 {children}
                               </p>
                             );

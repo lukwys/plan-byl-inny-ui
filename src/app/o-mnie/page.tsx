@@ -59,12 +59,12 @@ const AboutMe = async () => {
                       <ReactMarkdown
                         components={{
                           p: ({ children }) => (
-                            <p className="font-eb-garamond text-lg text-justify mb-4 last:mb-0">
+                            <p className="font-eb-garamond text-lg mb-4 last:mb-0">
                               {children}
                             </p>
                           ),
                           li: ({ children }) => (
-                            <li className="font-eb-garamond text-lg text-justify mb-4 last:mb-0">
+                            <li className="font-eb-garamond text-lg mb-4 last:mb-0">
                               {children}
                             </li>
                           ),
