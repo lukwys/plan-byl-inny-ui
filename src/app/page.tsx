@@ -1,9 +1,7 @@
 import { Suspense } from "react";
-import { BlogPost } from "@/components/blog-post";
 import { NewsletterStatus } from "@/components/newsletter-status";
 import { strapiService } from "@/services/strapi";
-import { HomeBaner } from "@/components/home-baner";
-import { Sidebar } from "@/components/sidebar";
+import { PostsPage } from "@/components/posts-page";
 import { Metadata } from "next";
 import { SITE_URL } from "@/config/next";
 
@@ -29,7 +27,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const posts = await strapiService.getPosts();
+  const [{ posts, totalPages }, { tagline }] = await Promise.all([
+    strapiService.getPostsPage(1),
+    strapiService.getHomepage(),
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -54,28 +55,15 @@ export default async function Home() {
         <NewsletterStatus />
       </Suspense>
 
-      <HomeBaner />
-
-      <div className="container mx-auto bg-white py-10 grid gap-10 lg:grid-cols-24 px-4 lg:px-0">
-        <div className="lg:col-start-2 lg:col-span-15">
-          <h1 className="font-dm-sans font-semibold text-center lg:text-left text-3xl mb-10">
-            {posts.length === 0
-              ? "Cisza przed burzą... Wpisy są w drodze!"
-              : "Odkryj najnowsze wpisy z bloga"}
-          </h1>
-
-          <div className="flex flex-col gap-10">
-            {posts.map((post) => (
-              <BlogPost key={post.documentId} post={post} />
-            ))}
-          </div>
-        </div>
-
-        <aside className="lg:col-start-18 lg:col-span-6">
-          <div className="block lg:hidden h-px bg-neutral-200 my-4" />
-          <Sidebar />
-        </aside>
-      </div>
+      <PostsPage
+        title={tagline}
+        fallbackTitle="Plan był inny"
+        posts={posts}
+        currentPage={1}
+        totalPages={totalPages}
+        basePath=""
+        emptyMessage="Cisza przed burzą... Wpisy są w drodze!"
+      />
     </main>
   );
 }

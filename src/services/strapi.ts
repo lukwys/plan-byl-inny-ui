@@ -1,6 +1,7 @@
 import { draftMode } from "next/headers";
 import { STRAPI_URL, STRAPI_API_TOKEN } from "@/config/strapi";
-import { requestData } from "@/lib/http/requestData";
+import { requestData, requestJson } from "@/lib/http/requestData";
+import { getPageRange, getTotalPages } from "@/lib/posts/pagination";
 import { AboutMeModel } from "@/types/about-me";
 import { CategoryModel } from "@/types/category";
 import { PublicCommentModel } from "@/types/comments";
@@ -31,6 +32,32 @@ export const strapiService = {
     return requestData<PostModel[]>(`${STRAPI_URL}/api/posts?${query}`, {
       revalidate: 60, tags: ["posts"],
     });
+  },
+  async getPostsPage(
+    page: number,
+    categorySlug?: string,
+  ): Promise<{ posts: PostModel[]; totalPages: number }> {
+    const query = qs.stringify(
+      {
+        sort: ["date:desc"],
+        populate: ["cover_image", "category"],
+        filters: categorySlug
+          ? { category: { slug: { $eq: categorySlug } } }
+          : {},
+        pagination: { ...getPageRange(page), withCount: true },
+      },
+      { encodeValuesOnly: true },
+    );
+
+    const { data, meta } = await requestJson<{
+      data: PostModel[];
+      meta: { pagination: { total: number } };
+    }>(`${STRAPI_URL}/api/posts?${query}`, {
+      revalidate: 60,
+      tags: ["posts"],
+    });
+
+    return { posts: data, totalPages: getTotalPages(meta.pagination.total) };
   },
   async getCategories(): Promise<CategoryModel[]> {
     const query = qs.stringify(

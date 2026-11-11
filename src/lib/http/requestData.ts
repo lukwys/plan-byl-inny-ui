@@ -9,6 +9,15 @@ export async function requestData<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
+  const result = await requestJson<{ data: T }>(path, options);
+
+  return result?.data as T;
+}
+
+export async function requestJson<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
   const { revalidate, tags, ...fetchOptions } = options;
 
   const revalidateValue =
@@ -30,7 +39,5 @@ export async function requestData<T>(
     );
   }
 
-  const result = await response.json();
-
-  return result?.data as T;
+  return (await response.json()) as T;
 }

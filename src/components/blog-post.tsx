@@ -6,35 +6,50 @@ import { PostInfo } from "./post-info";
 
 type BlogPostProps = {
   post: PostModel;
+  featured?: boolean;
 };
 
-export const BlogPost = ({ post }: BlogPostProps) => {
+export const BlogPost = ({ post, featured = false }: BlogPostProps) => {
   const { cover_image, title, preview, date, slug, category } = post;
 
   return (
-    <div>
-      <div className="relative h-[350px] w-full">
+    <article
+      className={`group relative grid content-start ${featured ? "" : "row-span-4 grid-rows-subgrid gap-y-0 pb-12"}`}
+    >
+      <div
+        className={`relative mb-4 w-full overflow-hidden rounded-xl ${featured ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+      >
         <Image
           src={getStrapiImage(cover_image.url)}
           alt={cover_image.alternativeText ?? ""}
           fill
           className="object-cover"
-          sizes="(max-width: 768px) 100vw, 950px"
+          sizes={
+            featured
+              ? "(max-width: 1024px) 100vw, 800px"
+              : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+          }
+          priority={featured}
         />
       </div>
-      <div className="bg-gray-50">
-        <div className="w-3/4 mx-auto py-10 flex flex-col gap-2.5 text-center">
-          <h3 className="font-dm-sans text-2xl font-semibold">{title}</h3>
-          <PostInfo category={category} date={date} />
-          <p className="font-eb-garamond text-lg">{preview}</p>
-          <Link
-            href={`/wpis/${slug}`}
-            className="font-eb-garamond text-main-red hover:text-main-red-hover"
-          >
-            czytaj →
-          </Link>
-        </div>
+      <div className="mb-2">
+        <PostInfo category={category} date={date} align="start" />
       </div>
-    </div>
+      <h2
+        className={`mb-2 font-dm-sans font-semibold leading-tight text-balance transition-colors group-hover:text-main-red ${featured ? "text-2xl md:text-3xl" : "text-xl"}`}
+      >
+        <Link
+          href={`/wpis/${slug}`}
+          className="after:absolute after:inset-0 after:content-['']"
+        >
+          {title}
+        </Link>
+      </h2>
+      <p
+        className={`font-eb-garamond leading-relaxed text-neutral-700 ${featured ? "text-lg md:text-xl" : "text-lg"}`}
+      >
+        {preview}
+      </p>
+    </article>
   );
 };
