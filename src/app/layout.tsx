@@ -8,7 +8,6 @@ import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
 
 const UMAMI_WEBSITE_ID = "14b0994c-ec87-4928-98d4-df8a22ef96b1";
-// Umami ignores visits from any other host (localhost, Vercel previews).
 const UMAMI_DOMAINS = "plan-byl-inny.pl";
 
 const dmSans = DM_Sans({
