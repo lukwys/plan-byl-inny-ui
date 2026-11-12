@@ -78,6 +78,11 @@ const PrivacyPolicyPage = () => {
               <li>
                 <strong>Ochrona Antyspamowa:</strong> Cloudflare
               </li>
+              <li>
+                <strong>Statystyki Odwiedzin:</strong> Vercel Web Analytics i
+                Umami (bez plików cookies i bez danych pozwalających Cię
+                zidentyfikować)
+              </li>
             </ul>
           </div>
         </section>

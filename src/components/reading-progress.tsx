@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics/track-event";
+
+const READ_THRESHOLD = 0.75;
 
 type ReadingProgressProps = {
   targetId: string;
+  slug: string;
 };
 
-export const ReadingProgress = ({ targetId }: ReadingProgressProps) => {
+export const ReadingProgress = ({ targetId, slug }: ReadingProgressProps) => {
   const [progress, setProgress] = useState(0);
   const frameRef = useRef<number>(null);
+  const trackedRef = useRef(false);
 
   useEffect(() => {
     const target = document.getElementById(targetId);
@@ -28,6 +33,11 @@ export const ReadingProgress = ({ targetId }: ReadingProgressProps) => {
       const scrolled = -top;
       const ratio = Math.min(Math.max(scrolled / scrollable, 0), 1);
       setProgress(ratio);
+
+      if (ratio >= READ_THRESHOLD && !trackedRef.current) {
+        trackedRef.current = true;
+        trackEvent("post-read", { slug });
+      }
     };
 
     const schedule = () => {
@@ -46,7 +56,7 @@ export const ReadingProgress = ({ targetId }: ReadingProgressProps) => {
         window.cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [targetId]);
+  }, [targetId, slug]);
 
   return (
     <div

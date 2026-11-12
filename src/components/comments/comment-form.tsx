@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { commentAction } from "@/actions/comment-action";
 import { commentFormSchema } from "@/lib/validation/schemas";
@@ -28,6 +29,7 @@ export const CommentForm = ({
 
   useEffect(() => {
     if (state.success) {
+      trackEvent("comment-submitted", { path: window.location.pathname });
       formRef.current?.reset();
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsFormValid(false);

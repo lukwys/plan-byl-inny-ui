@@ -5,6 +5,11 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { DM_Sans, EB_Garamond } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
+
+const UMAMI_WEBSITE_ID = "14b0994c-ec87-4928-98d4-df8a22ef96b1";
+// Umami ignores visits from any other host (localhost, Vercel previews).
+const UMAMI_DOMAINS = "plan-byl-inny.pl";
 
 const dmSans = DM_Sans({
   subsets: ["latin", "latin-ext"],
@@ -43,6 +48,12 @@ export default function RootLayout({
         <div className="flex-1 flex flex-col">{children}</div>
         <Footer />
         <Analytics />
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id={UMAMI_WEBSITE_ID}
+          data-domains={UMAMI_DOMAINS}
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
