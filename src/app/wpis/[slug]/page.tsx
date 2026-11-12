@@ -79,7 +79,7 @@ export default async function PostPage({
 
   return (
     <main className="mx-auto container bg-white pt-10">
-      <ReadingProgress targetId="post-article" />
+      <ReadingProgress targetId="post-article" slug={post.slug} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

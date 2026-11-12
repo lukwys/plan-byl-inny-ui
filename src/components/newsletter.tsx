@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics/track-event";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { newsletterAction } from "@/actions/newsletter-action";
 import { newsletterSchema } from "@/lib/validation/schemas";
@@ -25,6 +26,12 @@ export const Newsletter = ({
   });
 
   const { token, isMounted, formProps, turnstileProps } = useTurnstile(state);
+
+  useEffect(() => {
+    if (state.success && !state.alreadySubscribed) {
+      trackEvent("newsletter-signup", { path: window.location.pathname });
+    }
+  }, [state.success, state.alreadySubscribed]);
 
   const handleFormInput = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
